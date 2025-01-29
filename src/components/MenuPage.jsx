@@ -10,7 +10,8 @@ function MenuPage({ handleLogout }) {
   };
   return (
     <div>
-      Menu
+      AHAHAHAHAH ty ochlajmordo piwa ci się zachciało.... 
+      <br></br>
       <button onClick={handleLogoutClick}>Wyloguj</button>
     </div>
   );

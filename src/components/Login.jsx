@@ -22,7 +22,7 @@ const Login = ({ setIsLoggedIn, setUser }) => {
             uid: user.uid
           });
           setIsLoggedIn(true);
-          navigate('/menu')
+          navigate('/')
         } else {
           alert("Błąd logowania: Nie pobrano danych użytkownika.");
         }     
