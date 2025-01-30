@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
 import MenuPage from './components/MenuPage';
 import Register from './components/Register';
 import WelcomePage from './components/WelcomePage';
 import { auth } from './firebase';
+import AddReviewPage from './components/AddReviewPage';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 function App() {
@@ -21,7 +22,6 @@ function App() {
         setIsLoggedIn(false);
       }
     });
-    
   }, []);
 
   const handleLogout = () => {
@@ -35,17 +35,17 @@ function App() {
   };
 
   return (
-    <Routes>
-
-        {isLoggedIn === false ? (
-          <>
-            <Route path="/" element={<WelcomePage user={user} />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn} />} />
-          </>
-        ) : (
-          <>
-            <Route path="/" element={<MenuPage handleLogout={handleLogout} />} />
+      <Routes>
+          {isLoggedIn === false ? (
+              <>
+                  <Route path="/" element={<WelcomePage user={user}/>}/>
+                  <Route path="/register" element={<Register/>}/>
+                  <Route path="/login" element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn}/>}/>
+              </>
+          ) : (
+              <>
+                  <Route path="/" element={<MenuPage handleLogout={handleLogout}/>}/>
+                  <Route path="/add-review" element={<AddReviewPage/>}/>
 
           </>
         )}
