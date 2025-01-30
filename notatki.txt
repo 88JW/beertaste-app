@@ -19,3 +19,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
+
+
+Icon by <a class="link_pro" href="https://freeicons.io/oktoberfest-icon-set-3/beer-box-drinks-beverages-alcohol-bottle-package-icon-153007">WANICON</a> on <a href="https://freeicons.io">freeicons.io</a>
