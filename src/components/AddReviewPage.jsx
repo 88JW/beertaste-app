@@ -2,8 +2,14 @@ import { useState } from 'react'; import { TextField, Button, Container, Typogra
 import { addDoc, collection, Timestamp, getFirestore } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
+import { useNavigate } from "react-router-dom";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const AddReviewPage = () => {
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate("/");
+  };
   const [beerName, setBeerName] = useState('');
   const [brewery, setBrewery] = useState('');
   const [style, setStyle] = useState('');
@@ -91,7 +97,7 @@ const AddReviewPage = () => {
         selectedIcon,
         photoUrl: uploadedPhotoUrl,
         timestamp: now,
-        userId,
+        userId: userId,
       };
 
 
@@ -425,6 +431,12 @@ const AddReviewPage = () => {
       <input type="file" onChange={handlePhoto} />        <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
           Dodaj ocenę
         </Button>
+        <Button
+    variant="contained"
+    startIcon={"<"}
+        onClick={goBack}
+
+  >Wróć</Button>
       </Box>
     </Container>
   );
