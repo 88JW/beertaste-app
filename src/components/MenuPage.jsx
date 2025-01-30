@@ -24,6 +24,7 @@ function MenuPage({ handleLogout }) {
   
       <Button variant="contained" component={Link} to="/add-review">Dodaj nową ocenę</Button>
 
+
     </div>
   );
 }

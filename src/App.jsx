@@ -4,6 +4,7 @@ import Login from './components/Login';
 import MenuPage from './components/MenuPage';
 import Register from './components/Register';
 import WelcomePage from './components/WelcomePage';
+// import MyReviews from './components/MyReviews';
 import { auth } from './firebase';
 import AddReviewPage from './components/AddReviewPage';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
