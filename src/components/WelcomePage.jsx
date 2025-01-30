@@ -1,16 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 
 function WelcomePage({ user }) {
   return (
-    <div className="welcome-container">
-      <h1 className="welcome-header">Witaj!</h1>
-        {user ? (
-                <p>Jesteś zalogowany jako: {user.email}</p>
-            ) : null}
-            <Link to="/login" className='link'>Zaloguj się</Link>
-            <Link to="/register" className='link'>Zarejestruj</Link>
-    </div>
+    <Container
+    >
+      <Typography variant="h1" align="center" gutterBottom>Witaj!</Typography>
+      {user ? (
+        <Typography align="center">Jesteś zalogowany jako: {user.email}</Typography>
+      ) : null}
+      <Stack direction="column" spacing={2} sx={{ mt: 2 }}>
+        <Button component={Link} to="/login" color="primary" variant="contained" >Zaloguj się</Button>
+        <Button component={Link} to="/register" color="primary" variant="contained" >Zarejestruj</Button>
+      </Stack> 
+    </Container>
   );
 }
 
