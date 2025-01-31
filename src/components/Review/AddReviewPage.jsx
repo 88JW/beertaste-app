@@ -1,4 +1,4 @@
-import { useState } from 'react'; import { TextField, Button, Container, Typography, Box,  Slider, Select, MenuItem, FormControl, InputLabel, Tooltip, IconButton } from '@mui/material';
+import { useState } from 'react'; import { TextField, Button, Container, Typography, Box,  Slider, Select, MenuItem, FormControl, InputLabel, Tooltip, IconButton, Stack } from '@mui/material';
 import { addDoc, collection, Timestamp, getFirestore } from 'firebase/firestore'; 
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
@@ -38,10 +38,11 @@ const AddReviewPage = () => {
   const [photo, setPhoto] = useState(null);
   const [photoUrl, setPhotoUrl] = useState(null);
   const [selectedIcon, setSelectedIcon] = useState(null);
-
+  
+  
   const handlePhoto = async (e) => {
-    const file = e.target.files[0];
-    setPhoto(file);
+    const file = e.target.files[0]
+      setPhoto(file);
   };
 
   const handleSubmit = async (e) => {
@@ -193,7 +194,7 @@ const AddReviewPage = () => {
         <Typography variant="subtitle1" sx={{ mt: 2 }}>Nuty aromatyczne</Typography>
             <TextField
               fullWidth
-            margin="normal"
+              margin="normal"
             label="Nuty aromatyczne"
             value={aromaNotesText}
             onChange={(e) => setAromaNotesText(e.target.value)}
@@ -428,18 +429,30 @@ const AddReviewPage = () => {
                   onChange={(e) => setComments(e.target.value)}
                 />
 
-      <input type="file" onChange={handlePhoto} />        <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-          Dodaj ocenę 
-        </Button>
-        <Button
-    variant="contained" 
-    sx={{bgcolor:"#2e2e2e", mt:2}}
-    startIcon={"<"}
-        onClick={goBack} 
-
-  >Wróć</Button>
+          <Stack direction="row" spacing={2} mt={2} alignItems="center" justifyContent="center">
+            
+            <Button
+              variant="outlined"
+              component="label"
+              onChange={handlePhoto}
+            >
+              Dodaj Zdjęcie
+              <input
+                hidden
+                accept="image/*"
+                type="file"
+                onChange={handlePhoto}
+              />
+            </Button>
+          <Button type="submit" variant="contained" color="primary" >
+            Dodaj ocenę
+          </Button>
+          <Button variant="contained" sx={{bgcolor:"#2e2e2e"}} onClick={goBack}>
+            Wróć
+          </Button>
+          </Stack>
       </Box>
-    </Container>
+      </Container>
   );
 };
 

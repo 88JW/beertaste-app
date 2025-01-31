@@ -5,6 +5,11 @@ import { Link, useNavigate} from "react-router-dom";
 import { db, auth } from "../../firebase";
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 function MyReviewsPage() {
   
   const navigate = useNavigate();
@@ -54,14 +59,39 @@ function MyReviewsPage() {
   }, [user]);
 
   return (
-    <Container maxWidth="sm" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+    <Container maxWidth="sm" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', mt: 2 }}>
 
       <h1>Moje Oceny</h1>
       {error && <p>{error}</p>}
-      <ul>
-        {reviews.map((review) => (<li key={review.id}><Link to={`/review/${review.id}`}>{review.beerName}</Link></li>
+      <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+        {reviews.map((review) => (
+            <Paper key={review.id} elevation={3} sx={{ my: 1, p: 1, width:'100%'}}>
+              <ListItem disableGutters>
+                <Link to={`/review/${review.id}`}>
+                  <ListItemText
+                  primary={
+                    <Typography variant="h6" component="div">
+                      {review.beerName}
+                    </Typography>
+                  }
+                  secondary={
+                    <React.Fragment>
+                      <Typography
+                        sx={{ display: 'block' }}
+                        component="span"
+                        variant="body2"
+                        color="text.primary"
+                      >
+                       Styl: {review.style}
+                      </Typography>
+                      <Typography variant="caption">Data: {review.tastingDate}</Typography>
+                    </React.Fragment>}/>
+                </Link>
+                </ListItem>
+            </Paper>
         ))}
-      </ul>
+      </List>
+
       <Button
         variant="contained"
         color="secondary"
