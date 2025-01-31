@@ -1,32 +1,47 @@
-const CACHE_NAME = 'static-cache-v1';
+// Nazwa cache dla zasobów statycznych
+const CACHE_NAME = 'static-cache-v2';
+
+// Lista statycznych zasobów do cache'owania
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/src/main.jsx',
-  '/src/App.jsx',
-  '/src/index.css',
-  '/src/App.css',
-    '/src/firebase.js'
-  // Dodaj tutaj inne statyczne zasoby, które chcesz cache'ować
+  '/manifest.json',
+  '/vite.svg',
+  '/assets/index-76f8c256.js',
+  '/assets/index-3542345e.css',
+
+  // Dodaj tutaj wszystkie inne statyczne zasoby aplikacji
 ];
 
+// Nasłuchuj zdarzenia 'install' - instalacja service workera
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS);
-    })
-  );
+    console.log('[Service Worker] Installing Service Worker ...', event);
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then((cache) => {
+                console.log('[Service Worker] Precaching App Shell');
+                return cache.addAll(STATIC_ASSETS);
+            })
+    );
 });
 
+// Nasłuchuj zdarzenia 'fetch' - pobieranie zasobów
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
-  );
+    event.respondWith(
+        caches.match(event.request)
+            .then((response) => {
+                if (response) {
+                    return response; // Zwróć zasób z cache
+                } else {
+                    return fetch(event.request); // Pobierz zasób z sieci
+                }
+            })
+    );
 });
 
+// Nasłuchuj zdarzenia 'activate' - aktywacja service workera
 self.addEventListener('activate', (event) => {
+    console.log('[Service Worker] Activating Service Worker ....', event);
     const cacheWhitelist = [CACHE_NAME];
     event.waitUntil(
         caches.keys().then((cacheNames) => {

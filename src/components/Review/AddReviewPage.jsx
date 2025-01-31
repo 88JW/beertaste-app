@@ -1,7 +1,7 @@
-import { useState } from 'react'; import { TextField, Button, Container, Typography, Box,  Slider, Select, MenuItem, FormControl, InputLabel, Tooltip, IconButton, Stack } from '@mui/material';
-import { addDoc, collection, Timestamp, getFirestore } from 'firebase/firestore'; 
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { getAuth } from 'firebase/auth';
+import { useState } from 'react';
+import { TextField, Button, Container, Typography, Box, Slider, Select, MenuItem, FormControl, InputLabel, Tooltip, IconButton, Stack, Input } from '@mui/material';
+import { addDoc, collection, Timestamp, getFirestore } from 'firebase/firestore';
+import { getAuth, } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -17,102 +17,86 @@ const AddReviewPage = () => {
   const [aromaIntensity, setAromaIntensity] = useState(3);
   const [aromaQuality, setAromaQuality] = useState(3);
   const [aromaNotes, setAromaNotes] = useState({
-    fruity: false,
+      fruity: false,
     floral: false,
     hoppy: false,
     malty: false,
   });
   const [tasteIntensity, setTasteIntensity] = useState(3);
-  const [tasteBalance, setTasteBalance] = useState(3);
+ const [tasteBalance, setTasteBalance] = useState(3);
   const [bitterness, setBitterness] = useState(3); 
-  const [sweetness, setSweetness] = useState(3);  const [color, setColor] = useState('');
+  const [sweetness, setSweetness] = useState(3);
+  const [color, setColor] = useState('');
+
   const [acidity, setAcidity] = useState(3);
   const [tasteNotes, setTasteNotes] = useState('');
   const [comments, setComments] = useState('');
   const [overallRating, setOverallRating] = useState(5);
+
   const [aromaNotesText, setAromaNotesText] = useState('');
   const [foam, setFoam] = useState(3);
   const [clarity, setClarity] = useState(3);
-  const [complexity, setComplexity] = useState(3); 
-  const [drinkability, setDrinkability] = useState(3)
-  const [photo, setPhoto] = useState(null);
-  const [photoUrl, setPhotoUrl] = useState(null);
-  const [selectedIcon, setSelectedIcon] = useState(null);
-  
-  
-  const handlePhoto = async (e) => {
-    const file = e.target.files[0]
-      setPhoto(file);
-  };
+  const [complexity, setComplexity] = useState(3);
+  const [drinkability, setDrinkability] = useState(3);
+
+
+  const [photoUrl, setPhotoUrl] = useState('');
+
+  const [selectedIcon, setSelectedIcon] = useState(null); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const auth = getAuth();
     const db = getFirestore();
-    const storage = getStorage();
-
-    if (!auth.currentUser) {
+      const auth = getAuth();
+      if (!auth.currentUser) {
       console.error("Użytkownik nie jest zalogowany");
       return;
     }
 
+
     const userId = auth.currentUser.uid;
     const now = Timestamp.now();
 
-    let uploadedPhotoUrl = null;
+
     try {
-      if (photo) {
-          try {
-              const storageRef = ref(storage, `photos/${photo.name}`);
-              const uploadResult = await uploadBytes(storageRef, photo);
-              uploadedPhotoUrl = await getDownloadURL(uploadResult.ref);
-            }
-            catch (error) {
-              console.error("Błąd podczas wysyłania zdjęcia:", error);
-              return;
-            }
-
-      }
-
-      const newReview = {
-        beerName,
-        brewery,
-        style,
-        tastingDate,
-        aromaIntensity,
-        aromaQuality,
-        aromaNotes: aromaNotesText,
-        color,
-        clarity,
-        foam,
-        tasteIntensity,
-        complexity,
-        tasteBalance,
-        bitterness,
-        sweetness,
-        acidity,
-        tasteNotes,
-        drinkability,
-        overallRating,
-        selectedIcon,
-        photoUrl: uploadedPhotoUrl,
-        timestamp: now,
-        userId: userId,
+        const newReview = {
+          beerName,
+          brewery,
+          style,
+          tastingDate,
+          aromaIntensity,
+          aromaQuality,
+          aromaNotes: aromaNotesText,
+          color,
+          clarity,
+          foam,
+          tasteIntensity,
+          complexity,
+          tasteBalance,
+            bitterness,
+            sweetness,
+          acidity,
+          tasteNotes,
+          drinkability,
+          overallRating,
+          selectedIcon,
+          photoUrl,
+          timestamp: now,
+            userId: userId,
       };
 
+        const docRef = await addDoc(collection(db, 'reviews'), newReview);
+        console.log("Document written with ID: ", docRef.id);
 
-      const docRef = await addDoc(collection(db, 'reviews'), newReview);
-      console.log("Document written with ID: ", docRef.id);
+        setBeerName('');
+        setBrewery('');
+        setStyle('');
+        setTastingDate('');
+        setAromaIntensity(3);
+        setAromaQuality(3);
+        setAromaNotes({ fruity: false, floral: false, hoppy: false, malty: false });
 
-      setBeerName('');
-      setBrewery('');
-      setStyle('');
-      setTastingDate('');
-      setAromaIntensity(3);
-      setAromaQuality(3);
-      setAromaNotes({ fruity: false, floral: false, hoppy: false, malty: false });
-      setAromaNotesText('');
+       setAromaNotesText('');
       setColor('');
       setClarity(3);
       setFoam(3);
@@ -125,14 +109,39 @@ const AddReviewPage = () => {
       setTasteNotes('');
       setComplexity(3);
       setOverallRating(3);
-      setPhoto(null);
-      setSelectedIcon(null)
-      setPhotoUrl(null);
-
+     
+      setSelectedIcon(null);
+      setPhotoUrl('');
     } catch (e) {
       console.error("Error adding document: ", e);
+    } 
+  };
+    const handlePhoto = (e) => {
+        // Get the selected file from the input
+        const file = e.target.files[0];
+        // Check if a file was selected
+        if (file) {
+            // Create a FileReader to read the file's content
+            const reader = new FileReader();
+            // Define what happens when the file is successfully loaded
+            reader.onload = () => {
+                // Create a new Image object
+                const img = new Image();
+                // Define what happens when the image is loaded
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 800;
+                    canvas.height = (img.height * 800) / img.width;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const base64String = canvas.toDataURL('image/jpeg');
+                    setPhotoUrl(base64String); // Update the photoUrl state with the base64 string
+                };
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(file); // Start reading the file as a data URL
         }
-  }
+    };
 
   return (
     <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -195,7 +204,7 @@ const AddReviewPage = () => {
             <TextField
               fullWidth
               margin="normal"
-            label="Nuty aromatyczne"
+              label="Dodatkowe noty aromatyczne"
             value={aromaNotesText}
             onChange={(e) => setAromaNotesText(e.target.value)}
           />
@@ -235,7 +244,7 @@ const AddReviewPage = () => {
             value={foam}
             defaultValue={3}
             step={1}
-            marks
+           marks
             min={1}
             max={5}
             valueLabelDisplay="auto"
@@ -248,7 +257,7 @@ const AddReviewPage = () => {
           value={tasteNotes}
           onChange={(e) => setTasteNotes(e.target.value)}
         />
-          <Typography variant="subtitle1" sx={{ mt: 2 }}>Intensywność smaku</Typography>
+           <Typography variant="subtitle1" sx={{ mt: 2 }}>Intensywność smaku</Typography>
            <Slider
             aria-label="Intensywność smaku"
             value={tasteIntensity}
@@ -260,7 +269,6 @@ const AddReviewPage = () => {
             valueLabelDisplay="auto"
             onChange={(e, value) => setTasteIntensity(value)}
           />
-          
                 <Typography variant="subtitle1" sx={{ mt: 2 }}>Równowaga smaku</Typography>
                 <Slider
                   aria-label="Równowaga smaku"
@@ -403,7 +411,7 @@ const AddReviewPage = () => {
               <Tooltip title="Nie polecam">
                 <IconButton variant={selectedIcon === 'thumbDown' ? 'contained' : 'outlined'}
                   onClick={() => setSelectedIcon('thumbDown')}
-                  sx={{
+                   sx={{
                     color: selectedIcon === 'thumbsDown' ? 'grey' : 'inherit',
                   }}
                 >
@@ -428,31 +436,38 @@ const AddReviewPage = () => {
                   value={comments}
                   onChange={(e) => setComments(e.target.value)}
                 />
-
+        <TextField
+          fullWidth
+         margin="normal"
+          label="Zdjęcie"
+          value={photoUrl}
+          disabled
+        />
+          {photoUrl && (
+            <Box mt={2}>
+               <img src={photoUrl} alt="Wybrane zdjęcie" style={{ maxWidth: '300px', maxHeight: '300px' }} />
+            </Box>
+          )}
+          <Typography variant="subtitle1" sx={{ mt: 2 }} align="center">Wybierz zdjęcie</Typography>
           <Stack direction="row" spacing={2} mt={2} alignItems="center" justifyContent="center">
-            
             <Button
-              variant="outlined"
-              component="label"
-              onChange={handlePhoto}
-            >
-              Dodaj Zdjęcie
+              variant="contained"
+              component="label" color="secondary" sx={{ bgcolor: "#2e2e2e" }}>
               <input
-                hidden
-                accept="image/*"
+                accept="image/*" // Specify accepted file types
                 type="file"
                 onChange={handlePhoto}
-              />
-            </Button>
+                />
+                </Button>
           <Button type="submit" variant="contained" color="primary" >
-            Dodaj ocenę
+              Dodaj ocenę
           </Button>
-          <Button variant="contained" sx={{bgcolor:"#2e2e2e"}} onClick={goBack}>
+          <Button variant="contained" sx={{ bgcolor: "#2e2e2e" }} onClick={goBack}>
             Wróć
           </Button>
           </Stack>
       </Box>
-      </Container>
+    </Container>
   );
 };
 
