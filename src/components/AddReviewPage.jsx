@@ -1,5 +1,5 @@
 import { useState } from 'react'; import { TextField, Button, Container, Typography, Box,  Slider, Select, MenuItem, FormControl, InputLabel, Tooltip, IconButton } from '@mui/material';
-import { addDoc, collection, Timestamp, getFirestore } from 'firebase/firestore';
+import { addDoc, collection, Timestamp, getFirestore } from 'firebase/firestore'; 
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
@@ -134,7 +134,7 @@ const AddReviewPage = () => {
   }
 
   return (
-    <Container>
+    <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Typography variant="h4">Dodaj nową ocenę piwa</Typography>
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
         <TextField
@@ -429,12 +429,13 @@ const AddReviewPage = () => {
                 />
 
       <input type="file" onChange={handlePhoto} />        <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-          Dodaj ocenę
+          Dodaj ocenę 
         </Button>
         <Button
-    variant="contained"
+    variant="contained" 
+    sx={{bgcolor:"#2e2e2e", mt:2}}
     startIcon={"<"}
-        onClick={goBack}
+        onClick={goBack} 
 
   >Wróć</Button>
       </Box>

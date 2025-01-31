@@ -4,7 +4,9 @@ import { getFirestore, collection, query, where, getDocs } from "firebase/firest
 import { Link, useNavigate} from "react-router-dom";
 import { db, auth } from "../firebase";
 import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
 function MyReviewsPage() {
+  
   const navigate = useNavigate();
     const [reviews, setReviews] = useState([]);
   const [user, setUser] = useState(null);
@@ -52,20 +54,23 @@ function MyReviewsPage() {
   }, [user]);
 
   return (
-    <div><Button
-    variant="contained"
-    startIcon={"<"}
+    <Container maxWidth="sm" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+      <Button
+        variant="contained"
+        color="secondary"
+        startIcon={"<"}
         onClick={goBack}
-
-  >Wróć</Button>
-          <h1>Moje Oceny</h1>
+        sx={{ mb: 2 }}
+      >
+        Wróć
+      </Button>
+      <h1>Moje Oceny</h1>
       {error && <p>{error}</p>}
       <ul>
-        {reviews.map((review) => (
-          <li key={review.id}><Link to={`/review/${review.id}`}>{review.beerName}</Link></li>
+        {reviews.map((review) => (<li key={review.id}><Link to={`/review/${review.id}`}>{review.beerName}</Link></li>
         ))}
       </ul>
-    </div>
+    </Container>
   );
 }
 
