@@ -1,12 +1,11 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-
 import Box from '@mui/material/Box';
+
+import './MenuPage.css';
 function MenuPage({ handleLogout }) {
   const navigate = useNavigate();
-
   const handleLogoutClick = () => {
     handleLogout();
 
@@ -26,17 +25,29 @@ function MenuPage({ handleLogout }) {
             marginTop: 4,
           }}
         >
-      
-          <h1>
-            AHAHAHAHAH ty ochlajmordo piwa ci się zachciało....
-          </h1>
-          <Button variant="contained" color="secondary" onClick={handleLogoutClick}>Wyloguj</Button>
+          <h1>Witamy w Menu</h1>
 
-          <Button variant="contained" color="secondary" component={Link} to="/add-review">Dodaj nową ocenę</Button>
-          <Button variant="contained" color="secondary" component={Link} to="/my-reviews">Moje Oceny</Button>
+          <div className="tiles-container">
+            <Link to="/add-review" className="tile">
+              <div className="tile-content">
+                Dodaj nową ocenę
+              </div>
+            </Link>
+
+            <Link to="/my-reviews" className="tile">
+              <div className="tile-content">
+                Moje Oceny
+              </div>
+            </Link>
+          </div>
+
+          <button className="logout-button" onClick={handleLogoutClick}>
+            Wyloguj
+          </button>
         </Box>
     </Container>
   );
 }
 
 export default MenuPage;
+

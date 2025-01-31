@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'; 
 import { Routes, Route } from 'react-router-dom';
-import Login from './components/Login';
-import MenuPage from './components/MenuPage';
-import Register from './components/Register';
-import WelcomePage from './components/WelcomePage';
-import MyReviewsPage from './components/MyReviewsPage';
-import ReviewDetailsPage from './components/ReviewDetailsPage';
+import Login from './components/auth/Login';
+import MenuPage from './components/main/MenuPage';
+import Register from './components/auth/Register';
+import WelcomePage from './components/auth/WelcomePage';
+import MyReviewsPage from './components/Review/MyReviewsPage'
+import ReviewDetailsPage from './components/Review/ReviewDetailsPage'
 import { auth } from './firebase';
-import AddReviewPage from './components/AddReviewPage';
+import AddReviewPage from './components/Review/AddReviewPage'
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-
 function App() {
+  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -27,10 +27,10 @@ function App() {
   }, []);
 
   const handleLogout = () => {
-    signOut(auth)
-    .then(() => {
+    signOut(auth).then(() => {
       setUser(null);
-        setUser(null);
+      setUser(null);
+
         setIsLoggedIn(false);
     })
       .catch((error) => console.error('Błąd wylogowania', error));

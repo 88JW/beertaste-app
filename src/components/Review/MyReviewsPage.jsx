@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 import { Link, useNavigate} from "react-router-dom";
-import { db, auth } from "../firebase";
+import { db, auth } from "../../firebase";
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 function MyReviewsPage() {
@@ -55,6 +55,13 @@ function MyReviewsPage() {
 
   return (
     <Container maxWidth="sm" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+
+      <h1>Moje Oceny</h1>
+      {error && <p>{error}</p>}
+      <ul>
+        {reviews.map((review) => (<li key={review.id}><Link to={`/review/${review.id}`}>{review.beerName}</Link></li>
+        ))}
+      </ul>
       <Button
         variant="contained"
         color="secondary"
@@ -64,12 +71,6 @@ function MyReviewsPage() {
       >
         Wróć
       </Button>
-      <h1>Moje Oceny</h1>
-      {error && <p>{error}</p>}
-      <ul>
-        {reviews.map((review) => (<li key={review.id}><Link to={`/review/${review.id}`}>{review.beerName}</Link></li>
-        ))}
-      </ul>
     </Container>
   );
 }
