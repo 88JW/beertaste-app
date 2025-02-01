@@ -12,6 +12,10 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import DziennikiPage from './components/dzienniki/DziennikiPage';
 import KalkulatoryPage from './components/kalkulatory/KalkulatoryPage';
 import RecepturyPage from './components/receptury/RecepturyPage';
+import BLGCalculator from './components/kalkulatory/BLGCalculator';
+import CO2Calculator from './components/kalkulatory/CO2Calculator';
+import IbuCalculator from './components/kalkulatory/IbuCalculator';
+import TempCalculator from './components/kalkulatory/TempCalculator';
 import OcenPiwo from './components/Review/OcenPiwo';
 function App() {
   
@@ -56,6 +60,10 @@ function App() {
                   <Route path="/kalkulatory" element={<KalkulatoryPage/>}/>
                   <Route path="/receptury" element={<RecepturyPage/>}/>
                   <Route path="/ocenPiwo" element={<OcenPiwo/>}/>
+                  <Route path="/kalkulatory/blg" element={<BLGCalculator />} />
+                  <Route path="/kalkulatory/co2" element={<CO2Calculator />} />
+                  <Route path="/kalkulatory/ibu" element={<IbuCalculator />} />
+                  <Route path="/kalkulatory/temp" element={<TempCalculator />} />
                   <Route path="/my-reviews" element={<MyReviewsPage />} /> 
                   <Route path="/review/:id" element={<ReviewDetailsPage />} />
           </>
