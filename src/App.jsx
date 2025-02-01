@@ -9,6 +9,10 @@ import ReviewDetailsPage from './components/Review/ReviewDetailsPage'
 import { auth } from './firebase';
 import AddReviewPage from './components/Review/AddReviewPage'
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import DziennikiPage from './components/dzienniki/DziennikiPage';
+import KalkulatoryPage from './components/kalkulatory/KalkulatoryPage';
+import RecepturyPage from './components/receptury/RecepturyPage';
+import OcenPiwo from './components/Review/OcenPiwo';
 function App() {
   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -48,6 +52,10 @@ function App() {
               <>
                   <Route path="/" element={<MenuPage handleLogout={handleLogout}/>}/>
                   <Route path="/add-review" element={<AddReviewPage/>}/>
+                  <Route path="/dzienniki" element={<DziennikiPage/>}/>
+                  <Route path="/kalkulatory" element={<KalkulatoryPage/>}/>
+                  <Route path="/receptury" element={<RecepturyPage/>}/>
+                  <Route path="/ocenPiwo" element={<OcenPiwo/>}/>
                   <Route path="/my-reviews" element={<MyReviewsPage />} /> 
                   <Route path="/review/:id" element={<ReviewDetailsPage />} />
           </>

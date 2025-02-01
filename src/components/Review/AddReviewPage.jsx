@@ -10,6 +10,9 @@ const AddReviewPage = () => {
   const goBack = () => {
     navigate("/");
   };
+    const goToMyReviews = () => {
+      navigate('/my-reviews');
+  };
   const [beerName, setBeerName] = useState('');
   const [brewery, setBrewery] = useState('');
   const [style, setStyle] = useState('');
@@ -460,10 +463,15 @@ const AddReviewPage = () => {
                 />
                 </Button>
           <Button type="submit" variant="contained" color="primary" >
-              Dodaj ocenę
-          </Button>
-          <Button variant="contained" sx={{ bgcolor: "#2e2e2e" }} onClick={goBack}>
-            Wróć
+               Dodaj ocenę
+            </Button>
+          <Button onClick={goToMyReviews} variant="contained" color="primary">
+              Moje Recenzje
+            </Button>
+
+            <Button variant="contained" sx={{ bgcolor: "#2e2e2e" }} onClick={goBack}>
+              Wróć
+
           </Button>
           </Stack>
       </Box>
