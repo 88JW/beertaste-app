@@ -1,14 +1,41 @@
-import React from 'react';
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from "react-router-dom";
+import Box from '@mui/material/Box';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Button from '@mui/material/Button';
 
-function KalkulatoryPage() {
+function KalkulatoryPage({handleLogout}) {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('/');
+  };
   return (
-    <div>
-        <p><Link to="/kalkulatory/blg">BLGCalculator.jsx</Link></p>
-        <p><Link to="/kalkulatory/co2">CO2Calculator.jsx</Link></p>
-        <p><Link to="/kalkulatory/ibu">IbuCalculator.jsx</Link></p>
-        <p><Link to="/kalkulatory/temp">TempCalculator.jsx</Link></p>
-    </div>
+    <>
+    
+    <Box className='boxContainer'>
+          <Box className='tile'>
+          <Link to="/kalkulatory/blg">
+                <p className='iconMenu'> BLG Calculator</p>
+            </Link>
+          </Box>
+          <Box className='tile'>
+          <Link to="/kalkulatory/co2">
+                <p className='iconMenu'> CO2 Calculator</p>
+            </Link>
+          </Box>
+          <Box className='tile'>
+          <Link to="/kalkulatory/ibu">
+                <p className='iconMenu'> Ibu Calculator</p>
+            </Link>
+          </Box>
+          <Box className='tile'>
+          <Link to="/kalkulatory/temp">
+                <p className='iconMenu'> Temp Calculator</p>
+            </Link>
+          </Box>
+      </Box>
+      <Button variant="contained" onClick={handleClick}>Wstecz</Button>
+    </>
   );
 }
 

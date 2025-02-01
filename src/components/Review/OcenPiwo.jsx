@@ -1,32 +1,42 @@
 
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Paper, Typography, Box } from '@mui/material';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Paper, Typography, Box, Button } from "@mui/material";
 
 const OcenPiwo = () => {
+  const navigate = useNavigate();
+  const handleBack = () => {
+    navigate("/");
+  };
   return (
+    <>
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
+        display: "flex",
+        flexDirection: "column",
         gap: 2,
-        alignItems: 'center',
+        alignItems: "center",
         p: 2,
       }}
     >
       
-        <Link to="/add-review" style={{ textDecoration: 'none' }}>
-          <Paper elevation={3} sx={{ p: 3, textAlign: 'center', width: '100%', maxWidth:'400px' }}>
-            <Typography variant="h6">Dodaj Recenzję</Typography>
-          </Paper>
-        </Link>
-      
-        <Link to="/my-reviews" style={{ textDecoration: 'none' }}>
-          <Paper elevation={3} sx={{ p: 3, textAlign: 'center', width: '100%', maxWidth:'400px' }}>
-            <Typography variant="h6">Moje Recenzje</Typography>
-          </Paper>
-        </Link>
+      <Link to="/add-review" style={{ textDecoration: "none" }}>
+        <Paper
+          elevation={3}
+          sx={{ p: 3, textAlign: "center", width: "100%", maxWidth: "400px" }}
+        >
+          <Typography variant="h6">Dodaj Recenzję</Typography>
+        </Paper>
+      </Link>
+      <Link to="/my-reviews" style={{ textDecoration: "none" }}>
+        <Paper elevation={3} sx={{ p: 3, textAlign: "center", width: "100%", maxWidth: "400px" }}>
+          <Typography variant="h6">Moje Recenzje</Typography>
+        </Paper>
+      </Link>
+
     </Box>
+    <Button variant="contained" onClick={handleBack}>Wstecz</Button>
+    </>
   );
 };
 

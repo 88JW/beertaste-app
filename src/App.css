@@ -1,23 +1,16 @@
 body {
   margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
 }
-
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-  display: flex;
-  flex-direction: column;
 }
-
-@media (max-width: 768px) {
-  #root {
-    max-width: 100vw;
-    flex-direction: column;
-  }
-}
-
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -31,6 +24,47 @@ body {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+.boxContainer{
+  display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 50px;
+    width: 100%;
+}
+.tile{
+    border-radius: 15px;
+    width: 200px;
+    height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    flex-direction: column;
+    border: 2px solid #ccc;
+    background-color: #f0f0f0;    
+}
+.tile:hover {
+    background-color: #e0e0e0;
+    }
+}
+
+@media (max-width: 600px) {
+  .boxContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tile {
+    width: 90%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+}
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -39,17 +73,16 @@ body {
     transform: rotate(360deg);
   }
 }
-
-@media (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: reduce) {
   a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+    animation: none;
   }
 }
-
-.card {
-  padding: 2em;
+.iconMenu {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.read-the-docs {
-  color: #888;
-}
