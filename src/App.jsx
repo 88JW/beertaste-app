@@ -17,6 +17,8 @@ import CO2Calculator from './components/kalkulatory/CO2Calculator';
 import IbuCalculator from './components/kalkulatory/IbuCalculator';
 import TempCalculator from './components/kalkulatory/TempCalculator';
 import OcenPiwo from './components/Review/OcenPiwo';
+import AsystentWarzenia from './components/dzienniki/AsystentWarzenia';
+import AsystentButelkowania from './components/dzienniki/AsystentButelkowania';
 function App() {
   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -64,6 +66,8 @@ function App() {
                   <Route path="/kalkulatory/co2" element={<CO2Calculator />} />
                   <Route path="/kalkulatory/ibu" element={<IbuCalculator />} />
                   <Route path="/kalkulatory/temp" element={<TempCalculator />} />
+                  <Route path="/dzienniki/asystent-warzenia" element={<AsystentWarzenia/>}/>
+                  <Route path="/dzienniki/asystent-butelkowania" element={<AsystentButelkowania/>}/>
                   <Route path="/my-reviews" element={<MyReviewsPage />} /> 
                   <Route path="/review/:id" element={<ReviewDetailsPage />} />
           </>
