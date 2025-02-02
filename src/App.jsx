@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Login from './components/auth/Login';
 import MenuPage from './components/main/MenuPage';
@@ -20,10 +20,14 @@ import TempCalculator from './components/kalkulatory/TempCalculator';
 import OcenPiwo from './components/Review/OcenPiwo';
 import AsystentWarzenia from './components/dzienniki/AsystentWarzenia';
 import AsystentButelkowania from './components/dzienniki/AsystentButelkowania';
+import DziennikiWarzenia from './components/dzienniki/DziennikiWarzenia';
+import AddDziennikWarzenia from './components/dzienniki/AddDziennikWarzenia';
+import SzczegolyWarki from './components/dzienniki/SzczegolyWarki';
+
 function App() {
-  
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null) ;
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -50,27 +54,30 @@ function App() {
   return (
       <Routes>
           {isLoggedIn === false ? (
-              <>
-                  <Route path="/" element={<WelcomePage user={user}/>}/>
-                  <Route path="/register" element={<Register/>}/>
-                  <Route path="/login" element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn}/>}/>
-              </>
+            <>
+              <Route path="/" element={<WelcomePage user={user}/>}/>
+              <Route path="/register" element={<Register/>}/>
+              <Route path="/login" element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn}/>}/>
+            </>
           ) : (
-              <>
-                  <Route path="/" element={<MenuPage handleLogout={handleLogout}/>}/>
-                  <Route path="/add-review" element={<AddReviewPage/>}/>
-                  <Route path="/dzienniki" element={<DziennikiPage/>}/>
-                  <Route path="/kalkulatory" element={<KalkulatoryPage/>}/>
-                  <Route path="/receptury" element={<RecepturyPage/>}/>
-                  <Route path="/ocenPiwo" element={<OcenPiwo/>}/>
-                  <Route path="/kalkulatory/blg" element={<BLGCalculator />} />
-                  <Route path="/kalkulatory/co2" element={<CO2Calculator />} />
-                  <Route path="/kalkulatory/ibu" element={<IbuCalculator />} />
-                  <Route path="/kalkulatory/temp" element={<TempCalculator />} />
-                  <Route path="/dzienniki/asystent-warzenia" element={<AsystentWarzenia/>}/>
-                  <Route path="/dzienniki/asystent-butelkowania" element={<AsystentButelkowania/>}/>
-                  <Route path="/my-reviews" element={<MyReviewsPage />} /> 
-                  <Route path="/review/:id" element={<ReviewDetailsPage />} />
+            <>
+              <Route path="/" element={<MenuPage handleLogout={handleLogout}/>}/>
+              <Route path="/add-review" element={<AddReviewPage/>}/>
+              <Route path="/dzienniki" element={<DziennikiPage/>}/>
+              <Route path="/kalkulatory" element={<KalkulatoryPage/>}/>
+              <Route path="/receptury" element={<RecepturyPage/>}/>
+              <Route path="/ocenPiwo" element={<OcenPiwo/>}/>
+              <Route path="/kalkulatory/blg" element={<BLGCalculator />} />
+              <Route path="/kalkulatory/co2" element={<CO2Calculator />} />
+              <Route path="/kalkulatory/ibu" element={<IbuCalculator />} />
+              <Route path="/kalkulatory/temp" element={<TempCalculator />} />
+              <Route path="/dzienniki/asystent-warzenia" element={<AsystentWarzenia/>}/>
+              <Route path="/dzienniki/asystent-butelkowania" element={<AsystentButelkowania/>}/>
+              <Route path="/dzienniki/warzenia" element={<DziennikiWarzenia/>}/>
+              <Route path="/dzienniki/warzenia/add" element={<AddDziennikWarzenia/>}/>
+              <Route path="/dzienniki/warzenia/:id" element={<SzczegolyWarki/>}/>
+              <Route path="/my-reviews" element={<MyReviewsPage />} />
+              <Route path="/review/:id" element={<ReviewDetailsPage />} />
           </>
         )}
     </Routes>

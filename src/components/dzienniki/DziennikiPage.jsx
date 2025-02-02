@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
-import Bottle from '../../assets/bottle.png';
+import Bottle from '../../assets/bottle.png'; 
 import Brew from '../../assets/brew.png';
 
 function DziennikiPage() {
@@ -23,6 +23,12 @@ function DziennikiPage() {
          <img src={Brew} alt='brewing' className='iconMenu'/>
         <Typography variant='h6' sx={{fontSize: '1.2rem'}}>
           Asystent Warzenia
+        </Typography>
+      </Box>
+       <Box className="tile" onClick={() => navigate('/dzienniki/warzenia')}>
+         <img src={Brew} alt='brewing' className='iconMenu'/>
+        <Typography variant='h6' sx={{fontSize: '1.2rem'}}>
+         Dzienniki Warzenia
         </Typography>
       </Box>
     </Box>
