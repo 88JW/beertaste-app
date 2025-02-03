@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { doc, getDoc, collection, addDoc, getDocs } from 'firebase/firestore';
-import { db, auth } from '../../firebase';
+import { db, auth} from '../../firebase';
 import { TextField, Button, Checkbox, FormControlLabel, List, ListItem, ListItemText, Typography, Paper, Grid } from '@mui/material';
 
 function SzczegolyWarki() {
@@ -110,7 +110,12 @@ function SzczegolyWarki() {
 
   return (
     <div>
-      <h1>Szczegóły Warki</h1>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h1>Szczegóły Warki</h1>
+        <Button component={Link} to="/dzienniki/warzenia" variant="contained" color="primary">
+          Wstecz
+        </Button>
+      </div>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper elevation={3} style={{ padding: '1rem' }}>
@@ -176,6 +181,10 @@ function SzczegolyWarki() {
           </List>
           </Paper>
         </Grid>
+
+        <Button component={Link} to="/dzienniki/warzenia" variant="contained" color="primary">
+          Powrót do warzenia
+        </Button>
       </Grid>
     </div>
   );

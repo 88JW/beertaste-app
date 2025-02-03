@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { Button, Grid, Paper, Typography, Box } from "@mui/material";
 import { db, auth } from "../../firebase";
-import { Grid, Paper, Typography } from "@mui/material";
 
 function DziennikiWarzenia() {
   const [dzienniki, setDzienniki] = useState([]);
@@ -31,20 +31,33 @@ function DziennikiWarzenia() {
     }
 
   return (
-    <div>
-      <h1>Dzienniki Warzenia</h1>
-      <p>Tutaj znajdują się Twoje dzienniki warzenia.</p>
+    <Box>
+      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+          <Typography variant="h4">Dzienniki Warzenia</Typography>
+          
+      </Box>
       <Link to="/dzienniki/warzenia/add">
-          <button>Dodaj nowy dziennik</button>
+          <Button variant="contained" color="secondary">Dodaj nowy dziennik</Button>
       </Link>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          padding: (theme) => theme.spacing(2)
+        }}>
         {dzienniki.map((dziennik) => (
-          <Grid item xs={12} sm={6} md={4} key={dziennik.id}>
-            <Paper elevation={3} style={{ padding: "1rem" , cursor:"pointer"}} onClick={() => handleDiaryClick(dziennik.id)}>
+          <Grid item sx={{
+              flexBasis: '20rem',
+              padding: (theme) => theme.spacing(1)
+            }} key={dziennik.id}>
+            <Paper elevation={3} sx={{
+              padding: (theme) => theme.spacing(2),
+              maxWidth: '30rem',
+              cursor:"pointer"}} onClick={() => handleDiaryClick(dziennik.id)}>
               <Typography variant="h6">
                 Nazwa warki: {dziennik.nazwaWarki}
               </Typography>
-              <Typography>
+              <Typography >
                 Data nastawienia: {dziennik.dataNastawienia}
               </Typography>
               <Typography>Rodzaj piwa: {dziennik.rodzajPiwa}</Typography>
@@ -56,7 +69,16 @@ function DziennikiWarzenia() {
           </Grid>
         ))}
       </Grid>
-    </div>
+      <br></br>
+      <Button
+            component={Link}
+            to="/dzienniki"
+            variant="contained"
+            color="primary"
+          >
+            Wstecz
+          </Button>
+    </Box>
   );
 }
 
