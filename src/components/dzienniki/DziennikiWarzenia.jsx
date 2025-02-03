@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
-import { db } from "../../firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db, auth } from "../../firebase";
 import { Grid, Paper, Typography } from "@mui/material";
 
 function DziennikiWarzenia() {
   const [dzienniki, setDzienniki] = useState([]);
+    const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDzienniki = async () => {
-      const dziennikiCollection = collection(db, "dziennikiWarzenia");
-      const dziennikiSnapshot = await getDocs(dziennikiCollection);
+        if(!auth.currentUser){
+            return
+        }
+      const userId = auth.currentUser.uid;
+      const dziennikiCollection = collection(db, "dziennikiWarzenia");      
+      const q = query(dziennikiCollection, where("userId", "==", userId));
+      const dziennikiSnapshot = await getDocs(q);
       const dziennikiList = dziennikiSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -19,8 +25,6 @@ function DziennikiWarzenia() {
     };
     fetchDzienniki();
   }, []);
-
-    const navigate = useNavigate();
 
     const handleDiaryClick = (id) => {
         navigate(`/dzienniki/warzenia/${id}`);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { collection, addDoc, doc } from 'firebase/firestore';
 import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
+import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button';
 import { db } from '../../firebase';
 
@@ -26,11 +26,15 @@ function AddDziennikWarzenia() {
     }));
   };
 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const userId = auth.currentUser.uid
+
+    const formDataWithUserId = {...formData, userId}
     try {
-      const docRef = await addDoc(collection(db, "dziennikiWarzenia"), formData);
-      console.log("Document written with ID: ", docRef.id);
+      const docRef = await addDoc(collection(db, "dziennikiWarzenia"), formDataWithUserId);
+      console.log("Dodano nową warkę z id: ", docRef.id);
 
       // Tworzenie subkolekcji "przebiegFermentacji" dla nowo utworzonego dokumentu
       await addDoc(collection(db, "dziennikiWarzenia", docRef.id, "przebiegFermentacji"), {});
@@ -141,6 +145,8 @@ function AddDziennikWarzenia() {
       </form>
     </div>
   );
+  
 }
 
 export default AddDziennikWarzenia;
+import { auth } from '../../firebase';

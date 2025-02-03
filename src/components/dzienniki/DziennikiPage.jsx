@@ -5,6 +5,7 @@ import Bottle from '../../assets/bottle.png';
 import Brew from '../../assets/brew.png';
 
 function DziennikiPage() {
+  console.log("DziennikiPage")
   const navigate = useNavigate();
   const handleBack = () => {
     navigate('/');

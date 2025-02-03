@@ -1,33 +1,69 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { useParams, useNavigate } from 'react-router-dom';
+import { doc, getDoc, collection, addDoc, getDocs } from 'firebase/firestore';
+import { db, auth } from '../../firebase';
+import { TextField, Button, Checkbox, FormControlLabel, List, ListItem, ListItemText, Typography, Paper, Grid } from '@mui/material';
 
 function SzczegolyWarki() {
   const { id } = useParams();
   const [warka, setWarka] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [dataPomiaru, setDataPomiaru] = useState(new Date());
+  const [formData, setFormData] = useState({
+    blg: '',
+    temperatura: '',
+    piana: false,
+    co2: false, notatki: '',
+  })
+  const [przebiegFermentacji, setPrzebiegFermentacji] = useState([]); 
 
-  useEffect(() => {
-    const fetchWarka = async () => {
-      setLoading(true);
-      try {
-        const warkaRef = doc(db, 'dziennikiWarzenia', id);
-        const docSnap = await getDoc(warkaRef);
+  const getPrzebiegFermentacji = async () => {
+    const przebiegFermentacjiCollection = collection(db, "dziennikiWarzenia", id, "przebiegFermentacji");
+    const przebiegFermentacjiSnapshot = await getDocs(przebiegFermentacjiCollection);
+    const przebiegFermentacjiList = przebiegFermentacjiSnapshot.docs.map((doc) => {
+      const dataPomiaru = doc.data().dataPomiaru ? doc.data().dataPomiaru.toDate() : null;
+      return {
+        id: doc.id,
+        dataPomiaru,
+        ...doc.data()
+      }}).sort((a, b) => (b.dataPomiaru || 0) - (a.dataPomiaru || 0));
+    
+    setPrzebiegFermentacji(przebiegFermentacjiList);
+  };
 
-        if (docSnap.exists()) {
-          setWarka(docSnap.data());
+  const fetchDziennik = async () => {
+  try {
+    const userId = auth.currentUser?.uid;
+    if (!userId) return navigate('/dzienniki/warzenia');
+    const warkaRef = doc(db, 'dziennikiWarzenia', id);
+    const docSnap = await getDoc(warkaRef);
+
+
+      if (docSnap.exists()) {
+        if (!docSnap.data()) return navigate('/dzienniki/warzenia')
+         if(docSnap.data().userId === userId){
+           setWarka(docSnap.data());
+           getPrzebiegFermentacji();
         } else {
-          console.log('Nie znaleziono dokumentu!');
+        setWarka(null)
+      }
+    } else {
+      console.log('Nie znaleziono dokumentu!');  
         }
       } catch (error) {
         console.error('Błąd pobierania danych:', error);
       } finally {
+        
         setLoading(false);
       }
-    };
+  };
 
-    fetchWarka();
+  useEffect(() => {
+
+    setLoading(true);
+
+    fetchDziennik();
   }, [id]);
 
   if (loading) {
@@ -38,16 +74,109 @@ function SzczegolyWarki() {
     return <div>Nie znaleziono warki.</div>;
   }
 
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+
+    
+
+    setFormData(prevFormData => ({
+      ...prevFormData, 
+      ...(name === 'dataPomiaru' && setDataPomiaru(new Date(value))),
+      
+      [name]: type === 'checkbox' ? checked : value
+    }));
+
+  };
+
+  const handleSubmit = async (event) => {
+    
+   
+
+    event.preventDefault();
+    try {
+      
+      const data = {
+        ...formData,
+        dataPomiaru: dataPomiaru,
+      };
+      const docRef = await addDoc(collection(db, 'dziennikiWarzenia', id, 'przebiegFermentacji'), data);
+      const newPomiar = { id: docRef.id, ...formData, dataPomiaru: dataPomiaru };
+      setFormData({ blg: '', temperatura: '', piana: false, co2: false, notatki: '' });
+      setPrzebiegFermentacji((prevPrzebieg) => [newPomiar, ...prevPrzebieg]);
+    } catch (error) {
+      console.error('Błąd dodawania pomiaru:', error);
+    } 
+  };
+
   return (
     <div>
       <h1>Szczegóły Warki</h1>
-      <p>Nazwa warki: {warka.nazwaWarki}</p>
-      <p>Data nastawienia: {warka.dataNastawienia}</p>
-      <p>Rodzaj piwa: {warka.rodzajPiwa}</p>
-      <p>Drożdże: {warka.drozdze}</p>
-      <p>Chmiele: {warka.chmiele}</p>
-      <p>Rodzaj cukru: {warka.rodzajCukru}</p>
-      <p>Notatki: {warka.notatki}</p>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Paper elevation={3} style={{ padding: '1rem' }}>
+            <Typography variant="h6">Nazwa warki: {warka.nazwaWarki}</Typography>
+            <Typography>Data nastawienia: {warka.dataNastawienia}</Typography>
+            <Typography>Rodzaj piwa: {warka.rodzajPiwa}</Typography>
+            <Typography>Drożdże: {warka.drozdze}</Typography>
+            <Typography>Chmiele: {warka.chmiele}</Typography>
+            <Typography>Rodzaj cukru: {warka.rodzajCukru}</Typography>
+            <Typography>Notatki: {warka.notatki}</Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper elevation={3} style={{ padding: '1rem' }}>
+          <Typography variant="h6">Dodaj pomiar</Typography>
+            <form onSubmit={handleSubmit}>
+              <TextField
+                  type="datetime-local"
+                  name="dataPomiaru"
+                  value={dataPomiaru.toISOString().slice(0, 16)}
+                  onChange={handleChange}
+                   margin="normal"
+                  fullWidth />
+              <TextField label="BLG" name="blg" value={formData.blg} onChange={handleChange} margin="normal" fullWidth />
+              <TextField label="Temperatura" name="temperatura" value={formData.temperatura} onChange={handleChange} margin="normal" fullWidth />
+              <FormControlLabel
+                control={<Checkbox name="piana" checked={formData.piana} onChange={handleChange} />}
+                label="Piana"
+              />
+              <FormControlLabel
+                control={<Checkbox name="co2" checked={formData.co2} onChange={handleChange} />}
+                label="CO2"
+              />
+              <TextField
+                label="Notatki"
+                name="notatki"
+                value={formData.notatki}
+                onChange={handleChange}
+                margin="normal"
+                fullWidth
+                multiline
+              />
+              <Button type="submit" variant="contained" color="primary">Zapisz</Button>
+            </form>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper elevation={3} style={{ padding: '1rem' }}>
+          <Typography variant="h6">Przebieg fermentacji</Typography>
+          <List>
+            {przebiegFermentacji.map(item => (
+              <ListItem key={item.id} >
+                 <ListItemText primary={<Typography>Data: {item.dataPomiaru instanceof Date ? item.dataPomiaru.toLocaleDateString() + " " + item.dataPomiaru.toLocaleTimeString() : 'Brak daty'}</Typography>} secondary={<Typography>
+                    BLG: {typeof item.blg === 'string' && item.blg}, 
+                    Temperatura: {typeof item.temperatura === 'string' && item.temperatura}, 
+                    Piana: {item.piana !== undefined && (item.piana ? 'Tak' : 'Nie')},
+                    CO2: {item.co2 !== undefined && (item.co2 ? 'Tak' : 'Nie')}, 
+                    Notatki: {typeof item.notatki === 'string' && item.notatki}
+                    </Typography>} />
+
+              </ListItem>
+            ))}
+          </List>
+          </Paper>
+        </Grid>
+      </Grid>
     </div>
   );
 }
