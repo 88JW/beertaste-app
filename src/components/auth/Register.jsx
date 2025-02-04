@@ -1,7 +1,8 @@
 
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -22,10 +23,16 @@ const Register = () => {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db, "users", user.uid), {
+            beerDrank: 0,
+        });
       alert("Zarejestrowano pomyślnie!");
       // Tutaj możesz przekierować użytkownika do innej strony po rejestracji
     } catch (error) {
+         if (error.code === "auth/email-already-in-use"){
+            alert("Taki email jest już zajęty!");
+         }
       alert("Błąd rejestracji: " + error.message);
     }
   };
