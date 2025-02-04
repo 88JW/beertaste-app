@@ -8,6 +8,7 @@ import StarRateIcon from "@mui/icons-material/StarRate";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import { useMediaQuery, useTheme } from '@mui/material';
 import MenuBookIcon from "@mui/icons-material/MenuBook";
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
   
 function MenuPage({ handleLogout }) {
   const navigate = useNavigate();
@@ -43,6 +44,12 @@ function MenuPage({ handleLogout }) {
           <div className="tile">
             <MenuBookIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom:'10px' }}/>
             Receptury
+          </div>
+        </Link>
+        <Link to="/pomysly" style={{ textDecoration: 'none' }}>
+          <div className="tile">
+            <LightbulbIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom:'10px' }}/>
+            Pomysły
           </div>
         </Link>
       </Box>

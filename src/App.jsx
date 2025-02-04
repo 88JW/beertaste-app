@@ -23,6 +23,7 @@ import AsystentButelkowania from './components/dzienniki/AsystentButelkowania';
 import DziennikiWarzenia from './components/dzienniki/DziennikiWarzenia';
 import AddDziennikWarzenia from './components/dzienniki/AddDziennikWarzenia';
 import SzczegolyWarki from './components/dzienniki/SzczegolyWarki';
+import PomyslyPage from './components/main/PomyslyPage';
 
 function App() {
 
@@ -77,6 +78,7 @@ function App() {
               <Route path="/dzienniki/warzenia/add" element={<AddDziennikWarzenia/>}/>
               <Route path="/dzienniki/warzenia/:id" element={<SzczegolyWarki/>}/>
               <Route path="/my-reviews" element={<MyReviewsPage />} />
+              <Route path="/pomysly" element={<PomyslyPage/>}/>
               <Route path="/review/:id" element={<ReviewDetailsPage />} />
           </>
         )}
