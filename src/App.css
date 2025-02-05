@@ -2,7 +2,7 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
+  min-width: 360px;
   min-height: 100vh;
 }
 #root {
@@ -26,15 +26,15 @@ body {
 
 .boxContainer{
   display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
 }
 .tile{
     border-radius: 15px;
-    width: 150px;
-    height: 150px;
+    width: 130px;
+    height: 130px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -50,38 +50,12 @@ body {
 .tile:hover {
     background-color: #e0e0e0;
     }
-}
 
-@media (max-width: 600px) {
-  .boxContainer {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .tile {
-    width: 55%;
-    height: auto;
-    margin-bottom: 5px;
-  }
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  a:nth-of-type(2) .logo {
-    animation: none;
-  }
-}
 .iconMenu {
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+

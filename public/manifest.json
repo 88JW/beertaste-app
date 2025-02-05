@@ -1,7 +1,7 @@
 {
   "start_url": "/",
-  "name": "Aplikacja do notatek",
-  "short_name": "Notatki",
+  "name": "Beer Taste App",
+  "short_name": "BTA",
   "icons": [
    {
      "src": "/src/assets/icon-192x192.png",
