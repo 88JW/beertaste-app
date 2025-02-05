@@ -28,13 +28,13 @@ body {
   display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 50px;
+    gap: 10px;
     width: 100%;
 }
 .tile{
     border-radius: 15px;
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -59,9 +59,9 @@ body {
   }
 
   .tile {
-    width: 90%;
+    width: 55%;
     height: auto;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
 }
 
@@ -85,4 +85,3 @@ body {
   justify-content: center;
   align-items: center;
 }
-
