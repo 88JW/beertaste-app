@@ -12,6 +12,7 @@ import {
   Stack,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 function ReviewDetailsPage() {
   const { id } = useParams();
   const [review, setReview] = useState(null);
@@ -80,12 +81,23 @@ function ReviewDetailsPage() {
    */
   const scaledOverallRating = review.overallRating ? Math.round(review.overallRating / 2) : 0;
   return (
-    <Container maxWidth="md">
-      <Paper elevation={3} sx={{ p: 3, mt: 3 }}>
+    <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '100vh',
+      p: 2, // Padding for smaller devices
+      width:'100%'
+    }}
+  >
+       <Paper elevation={3} sx={{ p: 3,  width: '100%',
+          maxWidth: 'md',}}>
         {/* Main container for all the review details */}
         <Stack spacing={2}>
           {/* Display basic information about the beer */}
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h4" gutterBottom sx={{textAlign:'center'}}>
              {review.beerName}
           </Typography>
           <Typography variant="subtitle1" gutterBottom>
@@ -114,12 +126,16 @@ function ReviewDetailsPage() {
               readOnly
             />
           </Box>
+          <Box display="flex" alignItems="center" gap={1}>
           <Typography variant="body1" gutterBottom>
             Nuty aromatyczne: {review.aromaNotes}
           </Typography>
+          </Box>
+          <Box display="flex" alignItems="center" gap={1}>
           <Typography variant="body1" gutterBottom>
              Kolor: {review.color}
           </Typography>
+          </Box>
           {/* Display clarity rating */}
           <Box display="flex" alignItems="center" gap={1}>
             <Typography>Klarowność:</Typography>
@@ -179,9 +195,11 @@ function ReviewDetailsPage() {
               readOnly
             />
           </Box>
+          <Box display="flex" alignItems="center" gap={1}>
           <Typography variant="body1" gutterBottom>
             Nuty smakowe: {review.tasteNotes}
           </Typography>
+          </Box>
           {/* Display drinkability rating */}
           <Box display="flex" alignItems="center" gap={1}>
             <Typography>Pijalność:</Typography>
@@ -210,11 +228,12 @@ function ReviewDetailsPage() {
             />
           </Box>
           {/* Display description */}
-          <Typography variant="body1" gutterBottom>
+          <Typography variant="body1" gutterBottom sx={{textAlign:'center'}}>
             {review.description}
           </Typography>
 
           {/* Display Icon */}
+
           <Box display="flex" alignItems="center">
             <Typography mr={1}>Ikona:</Typography>
             <Box>{renderIcon()}</Box>
@@ -229,12 +248,14 @@ function ReviewDetailsPage() {
             />
           )}
         </Stack>
-      </Paper>
-       {/* Button to go back to the previous page */}
-      <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)}>
+         {/* Button to go back to the previous page */}
+
+      <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)} sx={{ mt: 3 }}>
         Wstecz
       </Button>
-    </Container>
+       </Paper>
+
+    </Box>
   );
 }
 

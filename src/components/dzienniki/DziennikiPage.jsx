@@ -33,7 +33,7 @@ function DziennikiPage() {
         </Typography>
       </Box>
     </Box>
-    <Button variant="contained" onClick={handleBack}>Wstecz</Button>
+    <Button variant="contained" sx={{ mt: 2 }} onClick={handleBack}>Wstecz</Button>
     </>
   );
 }
