@@ -11,7 +11,7 @@ function KalkulatoryPage({handleLogout}) {
   };
   return (
     <>
-    
+    <h1>Piwne Kalkulatory:</h1>
     <Box className='boxContainer'>
           <Box className='tile'>
           <Link to="/kalkulatory/blg">
@@ -34,7 +34,7 @@ function KalkulatoryPage({handleLogout}) {
             </Link>
           </Box>
       </Box>
-      <Button variant="contained" onClick={handleClick}>Wstecz</Button>
+      <Button sx={{ mt: 2 }} variant="contained" onClick={handleClick}>Wstecz</Button>
     </>
   );
 }

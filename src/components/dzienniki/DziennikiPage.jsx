@@ -12,7 +12,7 @@ function DziennikiPage() {
   };
   return (
     <>
-    
+    <h1>Warzenie Piwa:</h1>
     <Box className='boxContainer'>
       <Box className="tile" onClick={() => navigate('/dzienniki/asystent-butelkowania')}>
         <img src={Bottle} alt='butelka' className='iconMenu'/>

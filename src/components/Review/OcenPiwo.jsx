@@ -10,28 +10,31 @@ const OcenPiwo = () => {
 
   return (
     <>
+    <h1>Twoja Piwna Historia:</h1>
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          alignItems: "center",
-          p: 2,
+          flexDirection: "column",         
+          alignItems: "center",   
         }}
       >
-        <Link to="/add-review" style={{ textDecoration: "none" }}>
-          <Paper elevation={3} sx={{ p: 3, textAlign: "center", width: "100%", maxWidth: "400px" }}>
-            <Typography variant="h6">Dodaj Recenzję</Typography>
-          </Paper>
+        <Box className='boxContainer'>
+        <Link to="/add-review" >
+          <div className="tile">           
+            Dodaj Ocenę
+          </div>
         </Link>
-        <Link to="/my-reviews" style={{ textDecoration: "none" }}>
-          <Paper elevation={3} sx={{ p: 3, textAlign: "center", width: "100%", maxWidth: "400px" }}>
-            <Typography variant="h6">Moje Recenzje</Typography>
-          </Paper>
+        <Link to="/my-reviews" >
+        <div className="tile">           
+            Moje Oceny
+          </div>
         </Link>
+        </Box>
+        <Paper elevation={3} sx={{ mt: 2 }}>
         <IlePiwWypito />
+        </Paper>
       </Box>
-      <Button variant="contained" onClick={handleBack}>
+      <Button sx={{ mt: 2 }} variant="contained" onClick={handleBack}>
         Wstecz
       </Button>
     </>
