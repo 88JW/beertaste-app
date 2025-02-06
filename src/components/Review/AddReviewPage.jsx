@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { TextField, Button, Container, Typography, Box, Slider, Select, MenuItem, FormControl, InputLabel, Tooltip, IconButton, Stack, Input } from '@mui/material';
+import { TextField, Button, Container, Typography, Box, Slider, Select, MenuItem, FormControl, InputLabel, Tooltip, IconButton, Input } from '@mui/material';
 import { addDoc, collection, Timestamp, getFirestore } from 'firebase/firestore';
 import { getAuth, } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 
 const AddReviewPage = () => {
   const navigate = useNavigate();
@@ -147,7 +147,21 @@ const AddReviewPage = () => {
     };
 
   return (
-    <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <Container sx={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      alignItems: 'center',
+        width: '100%', 
+        maxWidth: 'md', 
+        padding: {
+          xs: 2,
+          sm: 3,
+          md: 4
+      },
+      padding: 2,
+
+    }}
+    >
       <Typography variant="h4">Dodaj nową ocenę piwa</Typography>
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
         <TextField
@@ -190,6 +204,15 @@ const AddReviewPage = () => {
           max={5}
           valueLabelDisplay="auto"
           onChange={(e, value) => setAromaIntensity(value)}
+          sx={{
+            '& .MuiSlider-thumb': {
+              width: { xs: 12, sm: 15 },
+              height: { xs: 12, sm: 15 },
+            },
+            '& .MuiSlider-track': {
+              height: { xs: 4, sm: 6 },
+            }
+          }}
         />
         <Typography variant="subtitle1" sx={{ mt: 2 }}>Jakość aromatu</Typography>
         <Slider
@@ -202,6 +225,15 @@ const AddReviewPage = () => {
           max={5}
           valueLabelDisplay="auto"
           onChange={(e, value) => setAromaQuality(value)}
+          sx={{
+            '& .MuiSlider-thumb': {
+              width: { xs: 12, sm: 15 },
+              height: { xs: 12, sm: 15 },
+            },
+            '& .MuiSlider-track': {
+              height: { xs: 4, sm: 6 },
+            }
+          }}
         />
         <Typography variant="subtitle1" sx={{ mt: 2 }}>Nuty aromatyczne</Typography>
             <TextField
@@ -239,6 +271,15 @@ const AddReviewPage = () => {
             max={5}
             valueLabelDisplay="auto"
             onChange={(e, value) => setClarity(value)}
+            sx={{
+              '& .MuiSlider-thumb': {
+                width: { xs: 12, sm: 15 },
+                height: { xs: 12, sm: 15 },
+              },
+              '& .MuiSlider-track': {
+                height: { xs: 4, sm: 6 },
+              }
+            }}
           />
 
           <Typography variant="subtitle1" sx={{ mt: 2 }}>Piana</Typography>
@@ -252,6 +293,15 @@ const AddReviewPage = () => {
             max={5}
             valueLabelDisplay="auto"
             onChange={(e, value) => setFoam(value)}
+            sx={{
+              '& .MuiSlider-thumb': {
+                width: { xs: 12, sm: 15 },
+                height: { xs: 12, sm: 15 },
+              },
+              '& .MuiSlider-track': {
+                height: { xs: 4, sm: 6 },
+              }
+            }}
           />
         <TextField
           fullWidth
@@ -271,6 +321,15 @@ const AddReviewPage = () => {
             max={5}
             valueLabelDisplay="auto"
             onChange={(e, value) => setTasteIntensity(value)}
+            sx={{
+              '& .MuiSlider-thumb': {
+                width: { xs: 12, sm: 15 },
+                height: { xs: 12, sm: 15 },
+              },
+              '& .MuiSlider-track': {
+                height: { xs: 4, sm: 6 },
+              }
+            }}
           />
                 <Typography variant="subtitle1" sx={{ mt: 2 }}>Równowaga smaku</Typography>
                 <Slider
@@ -283,6 +342,15 @@ const AddReviewPage = () => {
                   max={5}
                   valueLabelDisplay="auto"
                   onChange={(e, value) => setTasteBalance(value)}
+                  sx={{
+                    '& .MuiSlider-thumb': {
+                      width: { xs: 12, sm: 15 },
+                      height: { xs: 12, sm: 15 },
+                    },
+                    '& .MuiSlider-track': {
+                      height: { xs: 4, sm: 6 },
+                    }
+                  }}
                 />
                 <Typography variant="subtitle1" sx={{ mt: 2 }}>Goryczka</Typography>
                 <Slider
@@ -295,6 +363,15 @@ const AddReviewPage = () => {
                   max={5}
                   valueLabelDisplay="auto"
                   onChange={(e, value) => setBitterness(value)}
+                  sx={{
+                    '& .MuiSlider-thumb': {
+                      width: { xs: 12, sm: 15 },
+                      height: { xs: 12, sm: 15 },
+                    },
+                    '& .MuiSlider-track': {
+                      height: { xs: 4, sm: 6 },
+                    }
+                  }}
                 />
                 <Typography variant="subtitle1" sx={{ mt: 2 }}>Słodycz</Typography>
                 <Slider
@@ -307,6 +384,15 @@ const AddReviewPage = () => {
                   max={5}
                   valueLabelDisplay="auto"
                   onChange={(e, value) => setSweetness(value)}
+                  sx={{
+                    '& .MuiSlider-thumb': {
+                      width: { xs: 12, sm: 15 },
+                      height: { xs: 12, sm: 15 },
+                    },
+                    '& .MuiSlider-track': {
+                      height: { xs: 4, sm: 6 },
+                    }
+                  }}
                 />
                 <Typography variant="subtitle1" sx={{ mt: 2 }}>Kwasowość</Typography>
                 <Slider
@@ -319,6 +405,15 @@ const AddReviewPage = () => {
                   max={5}
                   valueLabelDisplay="auto"
                   onChange={(e, value) => setAcidity(value)}
+                  sx={{
+                    '& .MuiSlider-thumb': {
+                      width: { xs: 12, sm: 15 },
+                      height: { xs: 12, sm: 15 },
+                    },
+                    '& .MuiSlider-track': {
+                      height: { xs: 4, sm: 6 },
+                    }
+                  }}
                 />
 
                   <Typography variant="subtitle1" sx={{ mt: 2 }}>Pijalność</Typography>
@@ -332,6 +427,15 @@ const AddReviewPage = () => {
                     max={5}
                     valueLabelDisplay="auto"
                     onChange={(e, value) => setDrinkability(value)}
+                    sx={{
+                      '& .MuiSlider-thumb': {
+                        width: { xs: 12, sm: 15 },
+                        height: { xs: 12, sm: 15 },
+                      },
+                      '& .MuiSlider-track': {
+                        height: { xs: 4, sm: 6 },
+                      }
+                    }}
                   />
                   <Typography variant="subtitle1" sx={{ mt: 2 }}>Złożoność</Typography>
                   <Slider
@@ -344,6 +448,15 @@ const AddReviewPage = () => {
                     max={5}
                     valueLabelDisplay="auto"
                     onChange={(e, value) => setComplexity(value)}
+                    sx={{
+                      '& .MuiSlider-thumb': {
+                        width: { xs: 12, sm: 15 },
+                        height: { xs: 12, sm: 15 },
+                      },
+                      '& .MuiSlider-track': {
+                        height: { xs: 4, sm: 6 },
+                      }
+                    }}
                   />
                   <Typography variant="subtitle1" sx={{ mt: 2 }}>Ogólna ocena</Typography>
                   <Slider
@@ -355,6 +468,15 @@ const AddReviewPage = () => {
                         min={1}
                         max={10}
                         onChange={(e, value) => setOverallRating(value)}
+                        sx={{
+                          '& .MuiSlider-thumb': {
+                            width: { xs: 12, sm: 15 },
+                            height: { xs: 12, sm: 15 },
+                          },
+                          '& .MuiSlider-track': {
+                            height: { xs: 4, sm: 6 },
+                          }
+                        }}
                 />    
 
         <Box sx={{ mt: 2 }}>
@@ -448,32 +570,32 @@ const AddReviewPage = () => {
         />
           {photoUrl && (
             <Box mt={2}>
-               <img src={photoUrl} alt="Wybrane zdjęcie" style={{ maxWidth: '300px', maxHeight: '300px' }} />
+               <img src={photoUrl} alt="Wybrane zdjęcie" style={{ maxWidth: '250px', maxHeight: '250px' }} />
             </Box>
           )}
           <Typography variant="subtitle1" sx={{ mt: 2 }} align="center">Wybierz zdjęcie</Typography>
-          <Stack direction="row" spacing={2} mt={2} alignItems="center" justifyContent="center">
+          <Box >
             <Button
               variant="contained"
-              component="label" color="secondary" sx={{ bgcolor: "#2e2e2e" }}>
+              component="label" color="secondary" >
               <input
                 accept="image/*" // Specify accepted file types
                 type="file"
                 onChange={handlePhoto}
                 />
                 </Button>
-          <Button type="submit" variant="contained" color="primary" >
+          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
                Dodaj ocenę
             </Button>
-          <Button onClick={goToMyReviews} variant="contained" color="primary">
+          <Button onClick={goToMyReviews} variant="contained" color="primary" sx={{ mt: 2 }}>
               Moje Recenzje
             </Button>
 
-            <Button variant="contained" sx={{ bgcolor: "#2e2e2e" }} onClick={goBack}>
+            <Button variant="contained" sx={{ mt: 2 }} onClick={goBack}>
               Wróć
 
           </Button>
-          </Stack>
+          </Box>
       </Box>
     </Container>
   );
