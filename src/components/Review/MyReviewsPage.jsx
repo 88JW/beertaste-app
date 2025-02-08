@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { Link, useNavigate} from "react-router-dom";
+import IconButton from '@mui/material/IconButton';
 import { db, auth } from "../../firebase";
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -9,6 +10,8 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import Typography from '@mui/material/Typography';
 function MyReviewsPage() {
   
@@ -50,6 +53,16 @@ function MyReviewsPage() {
       console.error("Błąd pobierania recenzji:", err);
     }
   };
+  const deleteReview = async (reviewId) => {
+    try {
+      await deleteDoc(doc(db, "reviews", reviewId));
+      setReviews(reviews.filter((review) => review.id !== reviewId));
+      console.log("Recenzja usunięta pomyślnie.");
+    } catch (error) {
+      console.error("Błąd podczas usuwania recenzji:", error);
+      setError("Wystąpił błąd podczas usuwania recenzji.");
+    }
+  };
 
     const goBack = () => {
     navigate("/");
@@ -87,6 +100,11 @@ function MyReviewsPage() {
                       <Typography variant="caption">Data: {review.tastingDate}</Typography>
                     </React.Fragment>}/>
                 </Link>
+                  <IconButton aria-label="delete" onClick={() => deleteReview(review.id)}>
+                    <DeleteIcon />
+                  </IconButton>
+
+
                 </ListItem>
             </Paper>
         ))}
