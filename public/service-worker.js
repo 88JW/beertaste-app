@@ -1,4 +1,4 @@
-// Nazwa cache dla zasobów statycznych
+ok// Nazwa cache dla zasobów statycznych
 const CACHE_NAME = 'static-cache-v2';
 
 // Lista statycznych zasobów do cache'owania
@@ -6,10 +6,10 @@ const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/vite.svg',
-  '/assets/index-76f8c256.js',
-  '/assets/index-3542345e.css',
-
+  '/icon-192x192.png',
+  '/icon-512x512.png',
+  
+  
   // Dodaj tutaj wszystkie inne statyczne zasoby aplikacji
 ];
 

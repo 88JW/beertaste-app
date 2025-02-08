@@ -156,10 +156,8 @@ const AddReviewPage = () => {
         padding: {
           xs: 2,
           sm: 3,
-          md: 4
+          md: 4,
       },
-      padding: 2,
-
     }}
     >
       <Typography variant="h4">Dodaj nową ocenę piwa</Typography>
