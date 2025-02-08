@@ -136,7 +136,7 @@ function Ideas() {
         <div className="ideas-section">
           <h2>Adres strony</h2>
           <div className="ideas-subsection">
-            
+          https://adorable-eclair-d97c38.netlify.app/
             <p></p>
           </div>
         </div>        
