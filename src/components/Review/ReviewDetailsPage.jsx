@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate,  } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import {
@@ -8,6 +8,7 @@ import {
   Paper,
   Button,
   Box,
+
   Stack,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -20,9 +21,7 @@ function ReviewDetailsPage() {
   const [IconComponent, setIconComponent] = useState(null);
   const [error, setError] = useState(null);
 
-  /**
-   * Fetches review data from Firestore.
-   */
+
   useEffect(() => {
     const fetchReview = async () => {
       setLoading(true); // Set loading to true when starting to fetch data
@@ -76,21 +75,19 @@ function ReviewDetailsPage() {
     return <div>Nie znaleziono recenzji.</div>;
   }
   
+
+
   return (
     <Box
       sx={{
-        width: '100%',
+        
         maxWidth: 'md',
         margin: '0 auto',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh',
-      p: 2, // Padding for smaller devices
-      width:'100%'
-    }}
-    >
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%'}} >
       <Paper elevation={3} sx={{ p: 3, width: '100%' }}>
         {/* Main container for all the review details */}
         <Stack spacing={2} >
@@ -194,11 +191,15 @@ function ReviewDetailsPage() {
             />
           )}
         </Stack>
-         {/* Button to go back to the previous page */}
 
-      <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)} sx={{ mt: 3 }}>
-        Wstecz
-      </Button>
+        <Box sx={{ mt: 3 }}>
+          <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)} sx={{ mt: 3, mr: 1 }}>
+            Wstecz
+          </Button>
+
+          <Button onClick={() => navigate(`/edit-review/${id}`)} sx={{ mt: 3, mr: 1 }}> Edytuj</Button>
+        </Box>
+
        </Paper>
 
     </Box>

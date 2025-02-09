@@ -1,18 +1,22 @@
-jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TextField, Button, Container, Typography, Box, Slider, Select, MenuItem, FormControl, InputLabel, Tooltip, IconButton, Input } from '@mui/material';
-import { addDoc, collection, Timestamp, getFirestore } from 'firebase/firestore';
+import * as Icons from '@mui/icons-material';
+import { doc, updateDoc, collection, Timestamp, getFirestore, getDoc } from 'firebase/firestore';
 import { getAuth, } from 'firebase/auth';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 const EditReviewPage = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const goBack = () => {
     navigate("/");
   };
+  const [beerName, setBeerName] = useState('');
   const [brewery, setBrewery] = useState('');
   const [style, setStyle] = useState('');
+    
+    
   const [tastingDate, setTastingDate] = useState('');
   const [aromaIntensity, setAromaIntensity] = useState(3);
   const [aromaQuality, setAromaQuality] = useState(3);
@@ -28,7 +32,6 @@ const EditReviewPage = () => {
   const [sweetness, setSweetness] = useState(3);
   const [color, setColor] = useState('');
 
-  const [acidity, setAcidity] = useState(3);
   const [tasteNotes, setTasteNotes] = useState('');
   const [comments, setComments] = useState('');
   const [overallRating, setOverallRating] = useState(5);
@@ -36,6 +39,7 @@ const EditReviewPage = () => {
   const [aromaNotesText, setAromaNotesText] = useState('');
   const [foam, setFoam] = useState(3);
   const [clarity, setClarity] = useState(3);
+    const [acidity, setAcidity] = useState(3);
   const [complexity, setComplexity] = useState(3);
   const [drinkability, setDrinkability] = useState(3);
 
@@ -43,6 +47,44 @@ const EditReviewPage = () => {
   const [photoUrl, setPhotoUrl] = useState('');
 
   const [selectedIcon, setSelectedIcon] = useState(null); 
+    useEffect(() => {
+        const fetchReviewData = async () => {
+            if (!id) return;
+            const db = getFirestore();
+            const docRef = doc(db, 'reviews', id);
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    setBeerName(data.beerName);
+                    setBrewery(data.brewery);
+                    setStyle(data.style);
+                    setTastingDate(data.tastingDate);
+                    setAromaIntensity(data.aromaIntensity);
+                    setAromaQuality(data.aromaQuality);
+                    setAromaNotesText(data.aromaNotes);
+                    setColor(data.color);
+                    setClarity(data.clarity);
+                    setFoam(data.foam);
+                    setTasteIntensity(data.tasteIntensity);
+                    setDrinkability(data.drinkability);
+                    setTasteBalance(data.tasteBalance);
+                    setBitterness(data.bitterness);
+                    setSweetness(data.sweetness);
+                    setAcidity(data.acidity);
+                    setTasteNotes(data.tasteNotes);
+                    setComplexity(data.complexity);
+                    setOverallRating(data.overallRating);
+                    setSelectedIcon(data.selectedIcon);
+                    setPhotoUrl(data.photoUrl);
+
+                }
+            } catch (error) {
+                console.error("Error fetching review data: ", error);
+            }
+        };
+        fetchReviewData();
+    }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,59 +99,36 @@ const EditReviewPage = () => {
     const userId = auth.currentUser.uid;
     const now = Timestamp.now();
 
+      const reviewRef = doc(db, 'reviews', id);
 
-    try {
-        const newReview = {
-          beerName,
-          brewery,
-          style,
-          tastingDate,
-          aromaIntensity,
-          aromaQuality,
-          aromaNotes: aromaNotesText,
-          color,
-          clarity,
-          foam,
-          tasteIntensity,
-          complexity,
-          tasteBalance,
-            bitterness,
-            sweetness,
-          acidity,
-          tasteNotes,
-          drinkability,
-          overallRating,
-          selectedIcon,
-          photoUrl,
-          timestamp: now,
-            userId: userId,
-      };
-
-        const docRef = await addDoc(collection(db, 'reviews'), newReview);
-        console.log("Document written with ID: ", docRef.id);
-
-        setStyle('');
-        setTastingDate('');
-        setAromaIntensity(3);
-        setAromaQuality(3);
-        setAromaNotes({ fruity: false, floral: false, hoppy: false, malty: false });
-
-       setAromaNotesText('');
-      setColor('');
-      setClarity(3);
-      setFoam(3);
-      setTasteIntensity(3);
-      setDrinkability(3);
-      setTasteBalance(3);
-      setBitterness(3);
-      setSweetness(3);
-      setAcidity(3);
-      setTasteNotes('');
-      setComplexity(3);
-      setOverallRating(3);
-     
-      setSelectedIcon(null);
-      setPhotoUrl('');
+      try {
+          await updateDoc(reviewRef, {
+              beerName,
+              brewery,
+              style,
+              tastingDate,
+              aromaIntensity,
+              aromaQuality,
+              aromaNotes: aromaNotesText,
+              color,
+              clarity,
+              foam,
+              tasteIntensity,
+              complexity,
+              tasteBalance,
+              bitterness,
+              sweetness,
+              acidity,
+              tasteNotes,
+              drinkability,
+              overallRating,
+              selectedIcon,
+              photoUrl,
+              timestamp: now,
+              userId: userId,
+          });
+          console.log("Document updated with ID: ", id);
+          navigate(-1);
     } catch (e) {
       console.error("Error adding document: ", e);
     } 
@@ -155,8 +174,8 @@ const EditReviewPage = () => {
       },
     }}
     >
-      <Typography variant="h4">Dodaj nową ocenę piwa</Typography>
-      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+      <Typography variant="h4">Edytuj ocenę piwa</Typography>
+      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 , width: { xs: '100%', sm: '80%', md: '60%' } }}>
         <TextField
           fullWidth
           margin="normal"
@@ -487,11 +506,10 @@ const EditReviewPage = () => {
                   }}
                 >
                   ❤️
-                </IconButton>
+                </IconButton >
               </Tooltip>
               <Typography variant="caption" align="center">
-                Ulubione
-              </Typography>
+                Ulubione</Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Tooltip title="Specjalne">
@@ -502,11 +520,10 @@ const EditReviewPage = () => {
                     color: selectedIcon === 'star' ? 'gold' : 'inherit',
                   }}
                 >
-                  ⭐
+                <Icons.Star />
                 </IconButton>
               </Tooltip>
-              <Typography variant="caption" align="center">
-                Specjalne
+              <Typography variant="caption" align="center">Specjalne
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -517,12 +534,10 @@ const EditReviewPage = () => {
                   sx={{
                     color: selectedIcon === 'thumbUp' ? 'green' : 'inherit',
                   }}
-                >
-                  👍
+                  ><Icons.ThumbUp/>
                 </IconButton>
               </Tooltip>
-              <Typography variant="caption" align="center">
-                Polecam
+              <Typography variant="caption" align="center">Polecam
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -532,12 +547,10 @@ const EditReviewPage = () => {
                    sx={{
                     color: selectedIcon === 'thumbsDown' ? 'grey' : 'inherit',
                   }}
-                >
-                  👎
+                  ><Icons.ThumbDown/>
                 </IconButton>
               </Tooltip>
-              <Typography variant="caption" align="center">
-                Nie polecam
+              <Typography variant="caption" align="center">Nie polecam
               </Typography>
             </Box>
           </Box>
@@ -545,15 +558,7 @@ const EditReviewPage = () => {
 
             {selectedIcon && (
               <Typography variant="subtitle1" sx={{ mt: 2 }}>Wybrana ikona: {selectedIcon === 'heart' ? '❤️ Ulubione' : selectedIcon === 'star' ? '⭐ Specjalne' : selectedIcon === 'thumbUp' ? '👍 Polecam' : '👎 Nie polecam'}</Typography>
-            )}
-
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  label="Uwagi"
-                  value={comments}
-                  onChange={(e) => setComments(e.target.value)}
-                />
+                )}        
         <TextField
           fullWidth
          margin="normal"
@@ -577,8 +582,8 @@ const EditReviewPage = () => {
                 onChange={handlePhoto}
                 />
                 </Button>
-          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-               Dodaj ocenę
+              <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+               Zapisz zmiany
           </Button>
 
             <Button variant="contained" sx={{ mt: 2 }} onClick={goBack}>
