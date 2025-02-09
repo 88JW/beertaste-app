@@ -61,12 +61,13 @@ function MyReviewsPage() {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (id) => {
     try {
-      await deleteDoc(doc(db, "reviews", reviewToDelete));
-      setReviews(reviews.filter((review) => review.id !== reviewToDelete));
+      await deleteDoc(doc(db, "reviews", id));
+      setReviews(reviews.filter((review) => review.id !== id));
       console.log("Recenzja usunięta pomyślnie.");
     } catch (error) {
+        
       console.error("Błąd podczas usuwania recenzji:", error);
       setError("Wystąpił błąd podczas usuwania recenzji.");
     }
@@ -82,14 +83,16 @@ function MyReviewsPage() {
     setReviewToDelete(null);
   };
 
-  const handleCancelDelete = () => {
-    handleClose()
-  }
-  const handleConfirmDelete = () => {
-    handleDelete()
+ const handleCancelDelete = () => {
+    handleClose();
   };
 
-  const goBack = () => {
+  const handleConfirmDelete = async () => {
+    await handleDelete(reviewToDelete);
+   
+  };
+
+   const goBack = () => {
     navigate("/");
   };
   useEffect(() => {
@@ -132,7 +135,7 @@ function MyReviewsPage() {
                                         </Link>                                     
                                     </Box>
                                     <IconButton aria-label="delete" onClick={() => deleteReview(review.id)}>
-                                        <DeleteIcon />
+                                    <DeleteIcon onClick={() => handleClickOpen(review.id)} />
                                     </IconButton>
                                 </ListItem>
                                 {review.photoUrl && (
