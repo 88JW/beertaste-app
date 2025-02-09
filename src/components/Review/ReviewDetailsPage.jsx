@@ -7,7 +7,6 @@ import {
   Typography,
   Paper,
   Button,
-  Rating,
   Box,
   Stack,
 } from '@mui/material';
@@ -76,13 +75,13 @@ function ReviewDetailsPage() {
   if (!review) {
     return <div>Nie znaleziono recenzji.</div>;
   }
-    /**
-   * Converts the 1-10 rating scale to 1-5 for display.
-   */
-  const scaledOverallRating = review.overallRating ? Math.round(review.overallRating / 2) : 0;
+  
   return (
     <Box
-    sx={{
+      sx={{
+        width: '100%',
+        maxWidth: 'md',
+        margin: '0 auto',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -91,11 +90,10 @@ function ReviewDetailsPage() {
       p: 2, // Padding for smaller devices
       width:'100%'
     }}
-  >
-       <Paper elevation={3} sx={{ p: 3,  width: '100%',
-          maxWidth: 'md',}}>
+    >
+      <Paper elevation={3} sx={{ p: 3, width: '100%' }}>
         {/* Main container for all the review details */}
-        <Stack spacing={2}>
+        <Stack spacing={2} >
           {/* Display basic information about the beer */}
           <Typography variant="h4" gutterBottom sx={{textAlign:'center'}}>
              {review.beerName}
@@ -111,122 +109,70 @@ function ReviewDetailsPage() {
           </Typography>
           {/* Display aroma ratings */}
           <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Intensywność aromatu:</Typography>
-            <Rating
-              name="read-only"
-              value={parseInt(review.aromaIntensity, 10)}
-              readOnly
-            />
+            <Typography>Intensywność aromatu: {review.aromaIntensity}</Typography>
           </Box>
           <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Jakość aromatu:</Typography>
-            <Rating
-              name="read-only"
-              value={parseInt(review.aromaQuality, 10)}
-              readOnly
-            />
+            <Typography>Jakość aromatu: {review.aromaQuality}</Typography>
           </Box>
           <Box display="flex" alignItems="center" gap={1}>
-          <Typography variant="body1" gutterBottom>
-            Nuty aromatyczne: {review.aromaNotes}
-          </Typography>
+            <Typography variant="body1" gutterBottom>
+              Nuty aromatyczne: {review.aromaNotes}
+            </Typography>
           </Box>
           <Box display="flex" alignItems="center" gap={1}>
-          <Typography variant="body1" gutterBottom>
-             Kolor: {review.color}
-          </Typography>
-          </Box>
-          {/* Display clarity rating */}
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Klarowność:</Typography>
-            <Rating
-              name="read-only"
-              value={parseInt(review.clarity, 10)}
-              readOnly
-            />
-          </Box>
-          {/* Display foam rating */}
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Piana:</Typography>
-            <Rating name="read-only" value={parseInt(review.foam, 10)} readOnly />
-          </Box>
-          {/* Display taste intensity rating */}
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Intensywność smaku:</Typography>
-            <Rating
-              name="read-only"
-              value={parseInt(review.tasteIntensity, 10)}
-              readOnly
-            />
-          </Box>
-          {/* Display taste balance rating */}
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Balans smaku:</Typography>
-            <Rating
-              name="read-only"
-              value={parseInt(review.tasteBalance, 10)}
-              readOnly
-            />
-          </Box>
-          {/* Display bitterness rating */}
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Goryczka:</Typography>
-            <Rating
-              name="read-only"
-              value={parseInt(review.bitterness, 10)}
-              readOnly
-            />
-          </Box>
-          {/* Display sweetness rating */}
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Słodycz:</Typography>
-            <Rating
-              name="read-only"
-              value={parseInt(review.sweetness, 10)}
-              readOnly
-            />
-          </Box>
-          {/* Display acidity rating */}
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Kwasowość:</Typography>
-            <Rating
-              name="read-only"
-              value={parseInt(review.acidity, 10)}
-              readOnly
-            />
+            <Typography variant="body1" gutterBottom>
+              Kolor: {review.color}
+            </Typography>
           </Box>
           <Box display="flex" alignItems="center" gap={1}>
-          <Typography variant="body1" gutterBottom>
-            Nuty smakowe: {review.tasteNotes}
-          </Typography>
+            <Typography>Klarowność: {review.clarity}</Typography>
           </Box>
-          {/* Display drinkability rating */}
+
           <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Pijalność:</Typography>
-            <Rating
-              name="read-only"
-              value={parseInt(review.drinkability, 10)}
-              readOnly
-            />
+            <Typography>Piana: {review.foam}</Typography>
           </Box>
-          {/* Display complexity rating */}
+
           <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Złożoność:</Typography>
-            <Rating
-              name="read-only"
-              value={parseInt(review.complexity, 10)}
-              readOnly
-            />
+            <Typography>Intensywność smaku: {review.tasteIntensity}</Typography>
           </Box>
-             {/* Display overall rating */}
-           <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Ocena ogólna:</Typography>
-            <Rating
-              name="read-only"
-              value={scaledOverallRating}
-              readOnly
-            />
+
+          <Box display="flex" alignItems="center" gap={1}>
+            <Typography>Balans smaku: {review.tasteBalance}</Typography>
           </Box>
+
+          <Box display="flex" alignItems="center" gap={1}>
+            <Typography>Goryczka: {review.bitterness}</Typography>
+          </Box>
+
+          <Box display="flex" alignItems="center" gap={1}>
+            <Typography>Słodycz: {review.sweetness}</Typography>
+          </Box>
+
+          <Box display="flex" alignItems="center" gap={1}>
+            <Typography>Kwasowość: {review.acidity}</Typography>
+          </Box>
+
+          <Box display="flex" alignItems="center" gap={1}>
+            <Typography variant="body1" gutterBottom>
+              Nuty smakowe: {review.tasteNotes}
+            </Typography>
+          </Box>
+
+          <Box display="flex" alignItems="center" gap={1}>
+            <Typography>Pijalność: {review.drinkability}</Typography>
+          </Box>
+
+          <Box display="flex" alignItems="center" gap={1}>
+            <Typography>Złożoność: {review.complexity}</Typography>
+          </Box>
+          {/* Display overall rating */}
+          <Box display="flex" alignItems="center" gap={1}>
+            <Typography>Ocena ogólna (1-10):</Typography>
+            <Typography>{review.overallRating}</Typography>
+          </Box>
+
+
+
           {/* Display description */}
           <Typography variant="body1" gutterBottom sx={{textAlign:'center'}}>
             {review.description}
