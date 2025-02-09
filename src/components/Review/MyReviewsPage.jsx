@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
 import IconButton from '@mui/material/IconButton';
 import { auth, db } from "../../firebase";
@@ -13,6 +13,8 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
@@ -22,6 +24,8 @@ function MyReviewsPage() {
   const [reviews, setReviews] = useState([]);
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [reviewToDelete, setReviewToDelete] = useState(null);
 
   useEffect(() => {
   },[user])
@@ -56,15 +60,33 @@ function MyReviewsPage() {
       console.error("Błąd pobierania recenzji:", err);
     }
   };
-  const deleteReview = async (reviewId) => {
+
+  const handleDelete = async () => {
     try {
-      await deleteDoc(doc(db, "reviews", reviewId));
-      setReviews(reviews.filter((review) => review.id !== reviewId));
+      await deleteDoc(doc(db, "reviews", reviewToDelete));
+      setReviews(reviews.filter((review) => review.id !== reviewToDelete));
       console.log("Recenzja usunięta pomyślnie.");
     } catch (error) {
       console.error("Błąd podczas usuwania recenzji:", error);
       setError("Wystąpił błąd podczas usuwania recenzji.");
     }
+    handleClose();
+  };
+  const handleClickOpen = (reviewId) => {
+    setReviewToDelete(reviewId);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setReviewToDelete(null);
+  };
+
+  const handleCancelDelete = () => {
+    handleClose()
+  }
+  const handleConfirmDelete = () => {
+    handleDelete()
   };
 
   const goBack = () => {
@@ -107,7 +129,7 @@ function MyReviewsPage() {
                                                         <Typography variant="caption">Data: {review.tastingDate}</Typography>
                                                     </React.Fragment>}
                                             />
-                                        </Link>
+                                        </Link>                                     
                                     </Box>
                                     <IconButton aria-label="delete" onClick={() => deleteReview(review.id)}>
                                         <DeleteIcon />
@@ -121,7 +143,19 @@ function MyReviewsPage() {
                     )
                 })}
             </List>
-    
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogActions>
+                    <Button onClick={handleCancelDelete}>Anuluj</Button>
+                    <Button onClick={handleConfirmDelete} autoFocus>
+                        Usuń
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
 
       <Button
