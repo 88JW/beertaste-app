@@ -1,16 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate,  } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate, } from 'react-router-dom';
+import { doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
-import {
-  Container,
-  Typography,
-  Paper,
-  Button,
-  Box,
-  Select,
-  Stack,
-} from '@mui/material';
+import * as material from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Rating from '@mui/material/Rating';
 
@@ -22,6 +14,7 @@ function ReviewDetailsPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
 
 
   useEffect(() => {
@@ -67,136 +60,156 @@ function ReviewDetailsPage() {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await deleteDoc(doc(db, 'reviews', id));
+      navigate('/');
+    } catch (error) {
+      console.error('Błąd podczas usuwania recenzji:', error);
+      setError('Wystąpił błąd podczas usuwania recenzji.');
+    }
+    handleClose();
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   if (loading) { return <div>Ładowanie...</div>; }
   if (!review) {
-      return <div>Nie znaleziono recenzji.</div>;
+    return <div>Nie znaleziono recenzji.</div>;
   }
- 
+
   if (error) {
     return <div>Błąd: {error}</div>;
   }
   if (!review) {
     return <div>Nie znaleziono recenzji.</div>;
   }
-  
+
 
   return (
-    <Box
+    <material.Box
       sx={{
-        
+
         maxWidth: 'md',
         margin: '0 auto',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        width: '100%'}} >
-      <Paper elevation={3} sx={{ p: 3, width: '100%' }}>
+        width: '100%'
+      }} >
+      <material.Paper elevation={3} sx={{ p: 3, width: '100%' }}>
         {/* Main container for all the review details */}
-        <Stack spacing={2} >
+        <material.Stack spacing={2} >
           {/* Display basic information about the beer */}
-          <Typography variant="h4" gutterBottom sx={{textAlign:'center'}}>
-             {review.beerName}
-          </Typography>
-          <Typography variant="subtitle1" gutterBottom>
+          <material.Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>
+            {review.beerName}
+          </material.Typography>
+          <material.Typography variant="subtitle1" gutterBottom>
             Browar: {review.brewery}
-          </Typography>
-          <Typography variant="body1" gutterBottom>
+          </material.Typography>
+          <material.Typography variant="body1" gutterBottom>
             Styl: {review.style}
-          </Typography>
-          <Typography variant="body1" gutterBottom>
+          </material.Typography>
+          <material.Typography variant="body1" gutterBottom>
             Data degustacji: {review.tastingDate}
-          </Typography>
+          </material.Typography>
           {/* Display aroma ratings */}
-          <Box display="flex" alignItems="center" gap={1} >
-              <Typography>Intensywność aromatu:</Typography>
-              <Rating name="read-only" value={parseInt(review.aromaIntensity)} max={5} readOnly precision={1} />
-            </Box>
-            <Box display="flex" alignItems="center" gap={1}>
-              <Typography>Jakość aromatu:</Typography>
-              <Rating name="read-only" value={parseInt(review.aromaQuality)} max={5} readOnly precision={1} />
-            </Box>
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography variant="body1" gutterBottom>
+          <material.Box display="flex" alignItems="center" gap={1} >
+            <material.Typography>Intensywność aromatu:</material.Typography>
+            <Rating name="read-only" value={parseInt(review.aromaIntensity)} max={5} readOnly precision={1} />
+          </material.Box>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography>Jakość aromatu:</material.Typography>
+            <Rating name="read-only" value={parseInt(review.aromaQuality)} max={5} readOnly precision={1} />
+          </material.Box>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography variant="body1" gutterBottom>
               Nuty aromatyczne: {review.aromaNotes}
-            </Typography>
-          </Box>
-            <Box display="flex" alignItems="center" gap={1}>
-              <Typography variant="body1" gutterBottom>
-                Kolor: {review.color}
-              </Typography>
-            </Box>
-            <Box display="flex" alignItems="center" gap={1}>
-              <Typography>Klarowność:</Typography>
-              <Rating name="read-only" value={parseInt(review.clarity)} max={5} readOnly precision={1} />
-            </Box>
+            </material.Typography>
+          </material.Box>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography variant="body1" gutterBottom>
+              Kolor: {review.color}
+            </material.Typography>
+          </material.Box>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography>Klarowność:</material.Typography>
+            <Rating name="read-only" value={parseInt(review.clarity)} max={5} readOnly precision={1} />
+          </material.Box>
 
-            <Box display="flex" alignItems="center" gap={1}>
-              <Typography>Piana:</Typography>
-              <Rating name="read-only" value={parseInt(review.foam)} max={5} readOnly precision={1} />
-            </Box>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography>Piana:</material.Typography>
+            <Rating name="read-only" value={parseInt(review.foam)} max={5} readOnly precision={1} />
+          </material.Box>
 
-            <Box display="flex" alignItems="center" gap={1}>
-              <Typography>Intensywność smaku:</Typography>
-              <Rating name="read-only" value={parseInt(review.tasteIntensity)} max={5} readOnly precision={1} />
-            </Box>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography>Intensywność smaku:</material.Typography>
+            <Rating name="read-only" value={parseInt(review.tasteIntensity)} max={5} readOnly precision={1} />
+          </material.Box>
 
-            <Box display="flex" alignItems="center" gap={1}>
-              <Typography>Balans smaku:</Typography>
-              <Rating name="read-only" value={parseInt(review.tasteBalance)} max={5} readOnly precision={1} />
-            </Box>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography>Balans smaku:</material.Typography>
+            <Rating name="read-only" value={parseInt(review.tasteBalance)} max={5} readOnly precision={1} />
+          </material.Box>
 
-            <Box display="flex" alignItems="center" gap={1}>
-              <Typography>Goryczka:</Typography>
-              <Rating name="read-only" value={parseInt(review.bitterness)} max={5} readOnly precision={1} />
-            </Box>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography>Goryczka:</material.Typography>
+            <Rating name="read-only" value={parseInt(review.bitterness)} max={5} readOnly precision={1} />
+          </material.Box>
 
-          <Box display="flex" alignItems="center" gap={1}>
-            
-          </Box>
+          <material.Box display="flex" alignItems="center" gap={1}>
 
-          <Box display="flex" alignItems="center" gap={1}>
-          <Typography>Słodycz:</Typography>
-          <Rating name="read-only" value={review.sweetness} max={5} readOnly precision={1} />
-        </Box>
-        <Box display="flex" alignItems="center" gap={1}>
-          <Typography>Kwasowość:</Typography>
-          <Rating name="read-only" value={review.acidity} max={5} readOnly precision={1} />        </Box>
+          </material.Box>
 
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography variant="body1" gutterBottom>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography>Słodycz:</material.Typography>
+            <Rating name="read-only" value={review.sweetness} max={5} readOnly precision={1} />
+          </material.Box>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography>Kwasowość:</material.Typography>
+            <Rating name="read-only" value={review.acidity} max={5} readOnly precision={1} />        </material.Box>
+
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography variant="body1" gutterBottom>
               Nuty smakowe: {review.tasteNotes}
-            </Typography>
-          </Box>
+            </material.Typography>
+          </material.Box>
 
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Pijalność:</Typography>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography>Pijalność:</material.Typography>
             <Rating name="read-only" value={parseInt(review.drinkability)} max={5} readOnly precision={1} />
-          </Box>
+          </material.Box>
 
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Złożoność:</Typography>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography>Złożoność:</material.Typography>
             <Rating name="read-only" value={parseInt(review.complexity)} max={5} readOnly precision={1} />
-          </Box>
+          </material.Box>
           {/* Display overall rating */}
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Ocena ogólna:</Typography>
+          <material.Box display="flex" alignItems="center" gap={1}>
+            <material.Typography>Ocena ogólna:</material.Typography>
             <Rating name="read-only" value={parseInt(review.overallRating)} max={10} readOnly precision={1} />
-          </Box>
-          
+          </material.Box>
+
 
 
           {/* Display description */}
-          <Typography variant="body1" gutterBottom sx={{textAlign:'center'}}>
+          <material.Typography variant="body1" gutterBottom sx={{ textAlign: 'center' }}>
             {review.description}
-          </Typography>
+          </material.Typography>
 
           {/* Display Icon */}
 
-          <Box display="flex" alignItems="center">
-            <Typography mr={1}>Ikona:</Typography>
-            <Box>{review && renderIcon()}</Box>
-          </Box>
+          <material.Box display="flex" alignItems="center">
+            <material.Typography mr={1}>Ikona:</material.Typography>
+            <material.Box>{review && renderIcon()}</material.Box>
+          </material.Box>
 
           {/* Display Photo */}
           {review.photoUrl && (
@@ -206,19 +219,26 @@ function ReviewDetailsPage() {
               style={{ maxWidth: '100%', height: 'auto' }}
             />
           )}
-        </Stack>
+        </material.Stack>
 
-        <Box sx={{ mt: 3 }}>
-          <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)} sx={{ mt: 3, mr: 1 }}>
+        <material.Box sx={{ mt: 3 }}>
+          <material.Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)} sx={{ mt: 3, mr: 1 }}>
             Wstecz
-          </Button>
+          </material.Button>
 
-          <Button onClick={() => navigate(`/edit-review/${id}`)} sx={{ mt: 3, mr: 1 }}> Edytuj</Button>
-        </Box>
+          <material.Button onClick={() => navigate(`/edit-review/${id}`)} sx={{ mt: 3, mr: 1 }}> Edytuj</material.Button>
+          <material.Button onClick={handleClickOpen} sx={{ mt: 3, mr: 1 }} color="error">Usuń</material.Button>
+        </material.Box>
+        <material.Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <material.DialogActions>
+            <material.Button onClick={handleClose}>Anuluj</material.Button>
+            <material.Button onClick={handleDelete} autoFocus>Usuń</material.Button>
+          </material.DialogActions>
+        </material.Dialog>
 
-       </Paper>
+      </material.Paper>
 
-    </Box>
+    </material.Box>
   );
 }
 
