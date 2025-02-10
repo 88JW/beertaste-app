@@ -8,17 +8,19 @@ import {
   Paper,
   Button,
   Box,
-
+  Select,
   Stack,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Rating from '@mui/material/Rating';
+
+
 
 function ReviewDetailsPage() {
   const { id } = useParams();
   const [review, setReview] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [IconComponent, setIconComponent] = useState(null);
   const [error, setError] = useState(null);
 
 
@@ -31,6 +33,12 @@ function ReviewDetailsPage() {
         const docSnap = await getDoc(reviewRef);
         if (docSnap.exists()) {
           setReview(docSnap.data());
+          setReview((prevReview) => ({
+            ...prevReview,
+            sweetness: parseInt(prevReview.sweetness, 10), // Change to number
+            acidity: parseInt(prevReview.acidity, 10), // Change to number
+          }));
+
         } else {
           setError('Nie znaleziono recenzji.');
         }
@@ -44,30 +52,26 @@ function ReviewDetailsPage() {
     fetchReview();
   }, [id]);
 
-  const loadIcon = async (iconName) => {
-    try {
-      const { default: Icon } = await import(`@mui/icons-material/${iconName}`);
-      setIconComponent(Icon);
-    } catch (err) {
-      console.error('Error importing icon:', err);
-    }
-  };
-  useEffect(() => {
-    if (review?.selectedIcon) {
-      loadIcon(review.selectedIcon);
-    }
-  }, [review?.selectedIcon]);
   const renderIcon = () => {
-    if (IconComponent) {
-      const Icon = IconComponent;
-      return <Icon />;
+    switch (review.selectedIcon) {
+      case 'heart':
+        return <span style={{ color: 'red', fontSize: '24px' }}>❤️</span>;
+      case 'star':
+        return <span style={{ color: 'gold', fontSize: '24px' }}>⭐</span>;
+      case 'thumbUp':
+        return <span style={{ color: 'green', fontSize: '24px' }}>👍</span>;
+      case 'thumbDown':
+        return <span style={{ color: 'gray', fontSize: '24px' }}>👎</span>;
+      default:
+        return null;
     }
-    return null;
   };
 
-  if (loading) {
-    return <div>Ładowanie...</div>;
+  if (loading) { return <div>Ładowanie...</div>; }
+  if (!review) {
+      return <div>Nie znaleziono recenzji.</div>;
   }
+ 
   if (error) {
     return <div>Błąd: {error}</div>;
   }
@@ -75,7 +79,6 @@ function ReviewDetailsPage() {
     return <div>Nie znaleziono recenzji.</div>;
   }
   
-
 
   return (
     <Box
@@ -105,49 +108,60 @@ function ReviewDetailsPage() {
             Data degustacji: {review.tastingDate}
           </Typography>
           {/* Display aroma ratings */}
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Intensywność aromatu: {review.aromaIntensity}</Typography>
-          </Box>
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Jakość aromatu: {review.aromaQuality}</Typography>
-          </Box>
+          <Box display="flex" alignItems="center" gap={1} >
+              <Typography>Intensywność aromatu:</Typography>
+              <Rating name="read-only" value={parseInt(review.aromaIntensity)} max={5} readOnly precision={1} />
+            </Box>
+            <Box display="flex" alignItems="center" gap={1}>
+              <Typography>Jakość aromatu:</Typography>
+              <Rating name="read-only" value={parseInt(review.aromaQuality)} max={5} readOnly precision={1} />
+            </Box>
           <Box display="flex" alignItems="center" gap={1}>
             <Typography variant="body1" gutterBottom>
               Nuty aromatyczne: {review.aromaNotes}
             </Typography>
           </Box>
+            <Box display="flex" alignItems="center" gap={1}>
+              <Typography variant="body1" gutterBottom>
+                Kolor: {review.color}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" gap={1}>
+              <Typography>Klarowność:</Typography>
+              <Rating name="read-only" value={parseInt(review.clarity)} max={5} readOnly precision={1} />
+            </Box>
+
+            <Box display="flex" alignItems="center" gap={1}>
+              <Typography>Piana:</Typography>
+              <Rating name="read-only" value={parseInt(review.foam)} max={5} readOnly precision={1} />
+            </Box>
+
+            <Box display="flex" alignItems="center" gap={1}>
+              <Typography>Intensywność smaku:</Typography>
+              <Rating name="read-only" value={parseInt(review.tasteIntensity)} max={5} readOnly precision={1} />
+            </Box>
+
+            <Box display="flex" alignItems="center" gap={1}>
+              <Typography>Balans smaku:</Typography>
+              <Rating name="read-only" value={parseInt(review.tasteBalance)} max={5} readOnly precision={1} />
+            </Box>
+
+            <Box display="flex" alignItems="center" gap={1}>
+              <Typography>Goryczka:</Typography>
+              <Rating name="read-only" value={parseInt(review.bitterness)} max={5} readOnly precision={1} />
+            </Box>
+
           <Box display="flex" alignItems="center" gap={1}>
-            <Typography variant="body1" gutterBottom>
-              Kolor: {review.color}
-            </Typography>
-          </Box>
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Klarowność: {review.clarity}</Typography>
+            
           </Box>
 
           <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Piana: {review.foam}</Typography>
-          </Box>
-
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Intensywność smaku: {review.tasteIntensity}</Typography>
-          </Box>
-
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Balans smaku: {review.tasteBalance}</Typography>
-          </Box>
-
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Goryczka: {review.bitterness}</Typography>
-          </Box>
-
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Słodycz: {review.sweetness}</Typography>
-          </Box>
-
-          <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Kwasowość: {review.acidity}</Typography>
-          </Box>
+          <Typography>Słodycz:</Typography>
+          <Rating name="read-only" value={review.sweetness} max={5} readOnly precision={1} />
+        </Box>
+        <Box display="flex" alignItems="center" gap={1}>
+          <Typography>Kwasowość:</Typography>
+          <Rating name="read-only" value={review.acidity} max={5} readOnly precision={1} />        </Box>
 
           <Box display="flex" alignItems="center" gap={1}>
             <Typography variant="body1" gutterBottom>
@@ -156,18 +170,20 @@ function ReviewDetailsPage() {
           </Box>
 
           <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Pijalność: {review.drinkability}</Typography>
+            <Typography>Pijalność:</Typography>
+            <Rating name="read-only" value={parseInt(review.drinkability)} max={5} readOnly precision={1} />
           </Box>
 
           <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Złożoność: {review.complexity}</Typography>
+            <Typography>Złożoność:</Typography>
+            <Rating name="read-only" value={parseInt(review.complexity)} max={5} readOnly precision={1} />
           </Box>
           {/* Display overall rating */}
           <Box display="flex" alignItems="center" gap={1}>
-            <Typography>Ocena ogólna (1-10):</Typography>
-            <Typography>{review.overallRating}</Typography>
+            <Typography>Ocena ogólna:</Typography>
+            <Rating name="read-only" value={parseInt(review.overallRating)} max={10} readOnly precision={1} />
           </Box>
-
+          
 
 
           {/* Display description */}
@@ -179,7 +195,7 @@ function ReviewDetailsPage() {
 
           <Box display="flex" alignItems="center">
             <Typography mr={1}>Ikona:</Typography>
-            <Box>{renderIcon()}</Box>
+            <Box>{review && renderIcon()}</Box>
           </Box>
 
           {/* Display Photo */}

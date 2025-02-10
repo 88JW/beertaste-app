@@ -17,6 +17,9 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Rating from '@mui/material/Rating';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
 
 function MyReviewsPage() {
 
@@ -28,8 +31,22 @@ function MyReviewsPage() {
   const [reviewToDelete, setReviewToDelete] = useState(null);
 
   useEffect(() => {
-  },[user])
+  }, [user]);
 
+  const displayIcon = (icon) => {
+    switch (icon) {
+      case 'heart':
+        return '❤️';
+      case 'star':
+        return '⭐';
+      case 'thumbUp':
+        return '👍';
+      case 'thumbDown':
+        return '👎';
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -67,7 +84,7 @@ function MyReviewsPage() {
       setReviews(reviews.filter((review) => review.id !== id));
       console.log("Recenzja usunięta pomyślnie.");
     } catch (error) {
-        
+
       console.error("Błąd podczas usuwania recenzji:", error);
       setError("Wystąpił błąd podczas usuwania recenzji.");
     }
@@ -83,16 +100,16 @@ function MyReviewsPage() {
     setReviewToDelete(null);
   };
 
- const handleCancelDelete = () => {
+  const handleCancelDelete = () => {
     handleClose();
   };
 
   const handleConfirmDelete = async () => {
     await handleDelete(reviewToDelete);
-   
+
   };
 
-   const goBack = () => {
+  const goBack = () => {
     navigate("/");
   };
   useEffect(() => {
@@ -100,77 +117,65 @@ function MyReviewsPage() {
   }, [user]);
 
 
+  
+
+
   return (
-    <Container maxWidth="sm" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', mt: 2 }}>
-
-      <h1>Moje Oceny</h1>
-      {error && <p>{error}</p>}       
-            <List sx={{ width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-                {reviews.map((review) => {
-                    return (
-                        <Grid item xs={12} sm={6} key={review.id} sx={{ display: 'flex', justifyContent: 'center' }}>
-                            <Paper elevation={3} sx={{ my: 1, p: 1, width: '90%', maxWidth: '400px' }}>
-                                <ListItem disableGutters sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <Box sx={{ flexGrow: 1 }}>
-                                        <Link to={`/review/${review.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                            <ListItemText
-                                                primary={
-                                                    <Typography variant="h6" component="div">
-                                                        {review.beerName}
-                                                    </Typography>
-                                                }
-                                                secondary={
-                                                    <React.Fragment>
-                                                        <Typography
-                                                            sx={{ display: 'block' }}
-                                                            component="span"
-                                                            variant="body2"
-                                                            color="text.primary"
-                                                        >
-                                                            Styl: {review.style}
-                                                        </Typography>
-                                                        <Typography variant="caption">Data: {review.tastingDate}</Typography>
-                                                    </React.Fragment>}
-                                            />
-                                        </Link>                                     
-                                    </Box>
-                                    <IconButton aria-label="delete" onClick={() => deleteReview(review.id)}>
-                                    <DeleteIcon onClick={() => handleClickOpen(review.id)} />
-                                    </IconButton>
-                                </ListItem>
-                                {review.photoUrl && (
-                                    <img src={review.photoUrl} alt="Beer" style={{ width: '100%', height: 'auto', marginTop: '10px' }} />
-                                )}
-                            </Paper>
-                        </Grid>
-                    )
-                })}
-            </List>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogActions>
-                    <Button onClick={handleCancelDelete}>Anuluj</Button>
-                    <Button onClick={handleConfirmDelete} autoFocus>
-                        Usuń
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
-
-      <Button
-        variant="contained"
-        color="secondary"
-        startIcon={"<"}
-        onClick={goBack}
-        sx={{ mb: 2 }}
-      >
-        Wróć
-      </Button>
-    </Container>
+    <Container maxWidth="sm" sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", mt: 2 }}>
+    <h1>Moje Oceny</h1>
+    {error && <p>{error}</p>}
+    <Grid container spacing={2} sx={{ width: "100%", justifyContent: "center" }}>
+      {reviews.map((review) => (
+        <Grid item xs={12} sm={6} md={6} key={review.id} sx={{ display: "flex", justifyContent: "center" }}>
+          <Paper elevation={3} sx={{ my: 1, p: 1, width: "90%", maxWidth: "400px" }}>
+            <ListItem disableGutters sx={{ display: "flex", alignItems: "center" }}>
+              <Box sx={{ flexGrow: 1 }}>
+                <Link to={`/review/${review.id}`} style={{ textDecoration: "none", color: "inherit" }}>
+                  <ListItemText
+                    primary={
+                      <Box display="flex" flexDirection="column">
+                        <Typography variant="h6" component="div">
+                          {review.beerName}
+                        </Typography>
+                        <Typography variant="body2">{review.breweryName}</Typography>
+                        <Box sx={{ display: "flex", alignItems: "center", mt: 0.5, mb: 0.5 }}>
+                          <Rating
+                            name="overallRating"
+                            value={Number(review.overallRating) / 2 || 0}
+                            readOnly
+                            precision={0.5}
+                            max={5}
+                            emptyIcon={<StarBorderIcon />}
+                            icon={<StarIcon style={{ color: "orange" }} />}
+                          />
+                          {displayIcon(review.icon)}
+                          <Typography variant="body2" color="text.primary">
+                            Styl: {review.style}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    }
+                  />
+                </Link>
+              </Box>
+            </ListItem>
+            {review.photoUrl && (
+              <img src={review.photoUrl} alt={review.beerName} style={{ width: "100%", height: "auto", marginTop: "10px" }} />
+            )}
+          </Paper>
+        </Grid>
+      ))}
+    </Grid>
+    <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+      <DialogActions>
+        <Button onClick={handleCancelDelete}>Anuluj</Button>
+        <Button onClick={handleConfirmDelete} autoFocus>Usuń</Button>
+      </DialogActions>
+    </Dialog>
+    <Button variant="contained" color="secondary" onClick={goBack} sx={{ mb: 2 }}>
+      Wróć
+    </Button>
+  </Container>
   );
 }
 
