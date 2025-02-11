@@ -37,6 +37,7 @@ const OcenPiwo = () => {
   return (
     <>
     <h1>Moje Piwne Podsumowanie</h1>
+      
       <Box
         sx={{
           display: "flex",
@@ -44,6 +45,11 @@ const OcenPiwo = () => {
           alignItems: "center",   
         }}
       >
+        <Paper elevation={3} sx={{ mt: 2 }}>
+        <IlePiwWypito />
+        </Paper> 
+
+        <br></br>
         <Box className='boxContainer'>
         <Link to="/add-review" >
           <div className="tile">           
@@ -56,9 +62,7 @@ const OcenPiwo = () => {
           </div>
         </Link>
         </Box>
-        <Paper elevation={3} sx={{ mt: 2 }}>
-        <IlePiwWypito />
-        </Paper> 
+        
         <h2>Ostatni wpis:</h2>
         {lastReview && (
           <Card sx={{ width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
