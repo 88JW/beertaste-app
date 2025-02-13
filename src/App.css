@@ -1,3 +1,11 @@
+/* Analiza:
+   - Definicje stylów dla elementów body, #root, logo zapewniają spójny layout.
+   - Klasy .boxContainer, .tile oraz .iconMenu definiują wygląd poszczególnych komponentów.
+   - Media query dla ekranów o szerokości <= 400px zmienia rozmiary kafelków,
+     co poprawia responsywność na urządzeniach mobilnych.
+   - Stylizacja jest czytelna i zgodna z dobrymi praktykami CSS.
+*/
+
 body {
   margin: 0;
   display: flex;
@@ -27,14 +35,14 @@ body {
 .boxContainer{
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 2px;
+  justify-content:space-evenly;
+  gap: 10px;
   width: 100%;
 }
 .tile{
-    border-radius: 15px;
-    width: 130px;
-    height: 130px;
+  border-radius: 15px;
+  width: 150px;
+  height: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -57,5 +65,15 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media (max-width: 400px) {
+  .tile {
+    width: 120px;
+    height: 120px;
+  }
+  .boxContainer{
+  gap: 5px;
+}
 }
 

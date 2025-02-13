@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate, } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react'; // <-- dodano useRef
+import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import * as material from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Rating from '@mui/material/Rating';
-
-
+import ShareIcon from '@mui/icons-material/Share'; // <-- nowy import
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'; // <-- nowy import
 
 function ReviewDetailsPage() {
   const { id } = useParams();
@@ -15,7 +15,9 @@ function ReviewDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
-
+  const [fileToShare, setFileToShare] = useState(null); // <-- nowy stan
+  const fileInputRef = useRef(null); // <-- referencja do inputa
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // Dodaj nowy stan dla snackbara
 
   useEffect(() => {
     const fetchReview = async () => {
@@ -44,6 +46,82 @@ function ReviewDetailsPage() {
     };
     fetchReview();
   }, [id]);
+
+  // Nowy useEffect do pobrania obrazu jako File, jeśli photoUrl jest dostępny
+  useEffect(() => {
+    if (review && review.photoUrl) {
+      fetch(review.photoUrl)
+        .then(response => response.blob())
+        .then(blob => {
+          const file = new File([blob], 'beer.jpg', { type: blob.type });
+          setFileToShare(file);
+        })
+        .catch(err => console.error('Błąd pobierania obrazu:', err));
+    }
+  }, [review]);
+
+  // Nowa funkcja obsługująca zmianę obrazu przez input
+  const handleImageChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setFileToShare(selectedFile);
+  };
+
+  // Nowa funkcja udostępniania
+  const handleShare = async () => {
+    if (navigator.canShare && fileToShare && review) {
+      const textToShare = `
+Beer: ${review.beerName}
+Browar: ${review.brewery}
+Styl: ${review.style}
+Data degustacji: ${review.tastingDate}
+Ocena ogólna: ${review.overallRating}/10
+Opis: ${review.description}
+      `;
+      const shareData = {
+        title: `Recenzja piwa - ${review.beerName}`,
+        text: textToShare,
+        files: [fileToShare],
+      };
+      if (navigator.canShare(shareData)) {
+        try {
+          await navigator.share(shareData);
+        } catch (err) {
+          console.error('Błąd podczas udostępniania:', err);
+        }
+      } else {
+        console.error('Nie można udostępnić danych.');
+      }
+    } else {
+      console.log('Web Share API nie jest obsługiwane lub brak obrazu do udostępnienia');
+    }
+  };
+
+  // Nowa funkcja kopiowania treści recenzji
+  const handleCopyText = () => {
+    if (review) {
+      const textToCopy = `
+Beer: ${review.beerName}
+Browar: ${review.brewery}
+Styl: ${review.style}
+Data degustacji: ${review.tastingDate}
+Ocena ogólna: ${review.overallRating}/10
+Opis: ${review.description}
+      `;
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+          setSnackbarOpen(true);
+        })
+        .catch((err) => {
+          console.error('Błąd podczas kopiowania tekstu:', err);
+        });
+    }
+  };
+
+  // Funkcja zamykająca Snackbar
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setSnackbarOpen(false);
+  };
 
   const renderIcon = () => {
     switch (review.selectedIcon) {
@@ -94,16 +172,7 @@ function ReviewDetailsPage() {
 
   return (
     <material.Box
-      sx={{
-
-        maxWidth: 'md',
-        margin: '0 auto',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%'
-      }} >
+      sx={{ maxWidth: 'md', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' }} >
       <material.Paper elevation={3} sx={{ p: 3, width: '100%' }}>
         {/* Main container for all the review details */}
         <material.Stack spacing={2} >
@@ -227,15 +296,32 @@ function ReviewDetailsPage() {
           </material.Button>
 
           <material.Button onClick={() => navigate(`/edit-review/${id}`)} sx={{ mt: 3, mr: 1 }}> Edytuj</material.Button>
+          <material.Button onClick={handleShare} startIcon={<ShareIcon />} sx={{ mt: 3, mr: 1 }}>
+            Udostępnij
+          </material.Button>
+          <material.Button onClick={handleCopyText} startIcon={<ContentCopyIcon />} sx={{ mt: 3, mr: 1 }}>
+            Kopiuj
+          </material.Button>
           <material.Button onClick={handleClickOpen} sx={{ mt: 3, mr: 1 }} color="error">Usuń</material.Button>
         </material.Box>
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleImageChange}
+        />
         <material.Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
           <material.DialogActions>
             <material.Button onClick={handleClose}>Anuluj</material.Button>
             <material.Button onClick={handleDelete} autoFocus>Usuń</material.Button>
           </material.DialogActions>
         </material.Dialog>
-
+        <material.Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleCloseSnackbar}>
+          <material.Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+            Tekst został skopiowany do schowka!
+          </material.Alert>
+        </material.Snackbar>
       </material.Paper>
 
     </material.Box>

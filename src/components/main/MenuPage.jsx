@@ -9,7 +9,8 @@ import CalculateIcon from "@mui/icons-material/Calculate";
 import { useMediaQuery, useTheme } from '@mui/material';
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
-  
+import Button from "@mui/material/Button";
+
 function MenuPage({ handleLogout }) {
   const navigate = useNavigate();
   const handleLogoutClick = () => {
@@ -24,39 +25,39 @@ function MenuPage({ handleLogout }) {
       <Box className="boxContainer">
         <Link to="/dzienniki" style={{ textDecoration: 'none' }}>
           <div className="tile">
-            <AssignmentIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom:'10px' }}/>
+            <AssignmentIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom: '10px' }} />
             Dzienniki
           </div>
         </Link>
         <Link to="/ocenPiwo" style={{ textDecoration: 'none' }}>
           <div className="tile" >
-            <StarRateIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom:'10px' }}/>
+            <StarRateIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom: '10px' }} />
             Oceń Piwo
           </div>
         </Link>
         <Link to="/kalkulatory" style={{ textDecoration: 'none' }}>
           <div className="tile" >
-            <CalculateIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom:'10px' }}/>
+            <CalculateIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom: '10px' }} />
             Kalkulatory
-         </div>
+          </div>
         </Link>
         <Link to="/receptury" style={{ textDecoration: 'none' }}>
           <div className="tile">
-            <MenuBookIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom:'10px' }}/>
+            <MenuBookIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom: '10px' }} />
             Receptury
           </div>
         </Link>
         <Link to="/pomysly" style={{ textDecoration: 'none' }}>
           <div className="tile">
-            <LightbulbIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom:'10px' }}/>
+            <LightbulbIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom: '10px' }} />
             Pomysły
           </div>
         </Link>
       </Box>
-
-      <button className="logout-button" onClick={handleLogoutClick}>
+      <Button sx={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleLogoutClick}>
         Wyloguj
-      </button>
+      </Button>
+
 
     </Container>
   );
