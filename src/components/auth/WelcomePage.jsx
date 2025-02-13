@@ -16,9 +16,13 @@ function WelcomePage({ user }) {
       <Stack direction="column" spacing={2} sx={{ mt: 2 }}>
         <Button component={Link} to="/login" color="primary" variant="contained" >Zaloguj się</Button>
         <Button component={Link} to="/register" color="primary" variant="contained" >Zarejestruj</Button>
-      </Stack> 
+      </Stack>
     </Container>
   );
 }
+
+// Analiza: 
+// - Wyświetla tytuł powitalny i (jeśli dostępny) email użytkownika.
+// - Zawiera przyciski nawigacyjne do stron logowania i rejestracji.
 
 export default WelcomePage;

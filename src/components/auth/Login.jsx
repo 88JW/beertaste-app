@@ -35,25 +35,25 @@ const Login = ({ setIsLoggedIn, setUser }) => {
     }
   };
 
-  return (   
-    <Container sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap:2 }}>
+  return (
+    <Container sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
       <Typography variant="h2">Zaloguj się</Typography>
       <Box
         component="form"
-        onSubmit={handleLogin} 
+        onSubmit={handleLogin}
         sx={{ display: "flex", flexDirection: "column" }}
-        >
+      >
         <TextField
-         sx={{ mt: 1 }}
+          sx={{ mt: 1 }}
           fullWidth
           margin="normal"
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-        />       
+        />
         <TextField
-         sx={{ mt: 1 }}
+          sx={{ mt: 1 }}
           fullWidth
           margin="normal"
           type="password"
@@ -65,6 +65,9 @@ const Login = ({ setIsLoggedIn, setUser }) => {
           Login
         </Button>
         <Button component={Link} to="/register" color="primary" >Zarejestruj się</Button>
+        <Button component={Link} to="/password-reset" color="primary">
+          Zapomniałeś hasła?
+        </Button>
       </Box>
     </Container>
   );
