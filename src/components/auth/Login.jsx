@@ -8,6 +8,8 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import Stack from '@mui/material/Stack';
+import btaLogo from '../../assets/bta_logo_2.png';
 
 const Login = ({ setIsLoggedIn, setUser }) => {
   const [email, setEmail] = useState("");
@@ -37,6 +39,7 @@ const Login = ({ setIsLoggedIn, setUser }) => {
 
   return (
     <Container sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+      <img src={btaLogo} alt="BTA Logo" style={{ display: 'block', margin: '0 auto', maxWidth: '250px' }} />
       <Typography variant="h2">Zaloguj się</Typography>
       <Box
         component="form"
@@ -61,13 +64,15 @@ const Login = ({ setIsLoggedIn, setUser }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button type="submit" variant="contained" color="primary">
-          Login
-        </Button>
-        <Button component={Link} to="/register" color="primary" >Zarejestruj się</Button>
-        <Button component={Link} to="/password-reset" color="primary">
-          Zapomniałeś hasła?
-        </Button>
+        <Stack direction="column" spacing={1} sx={{ mt: 1 }}>
+          <Button type="submit" variant="contained" className="customButton">
+            Login
+          </Button>
+          <Button component={Link} to="/register" className="customButton" >Zarejestruj się</Button>
+          <Button component={Link} to="/password-reset" className="customButton">
+            Zapomniałeś hasła?
+          </Button>
+        </Stack>
       </Box>
     </Container>
   );

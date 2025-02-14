@@ -23,7 +23,7 @@ const PasswordReset = () => {
 
   return (
     <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-      <Typography variant="h2">Resetowanie hasła</Typography>
+      <Typography variant="h5">Resetowanie hasła</Typography>
       <Box component="form" onSubmit={handleReset} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <TextField
           fullWidth
@@ -32,11 +32,11 @@ const PasswordReset = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Button type="submit" variant="contained" color="primary">
+        <Button type="submit" variant="contained" className="customButton">
           Wyślij link resetujący
         </Button>
       </Box>
-      <Button component={Link} to="/login" color="primary">
+      <Button component={Link} to="/login" variant="contained" className="customButton">
         Powrót do logowania
       </Button>
     </Container>

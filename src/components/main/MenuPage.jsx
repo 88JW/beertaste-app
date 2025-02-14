@@ -10,6 +10,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import Button from "@mui/material/Button";
+import btaLogo from '../../assets/bta_logo_3.png';
 
 function MenuPage({ handleLogout }) {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function MenuPage({ handleLogout }) {
 
   return (
     <Container maxWidth="md" className="containerMenu" >
-      <h1>Witamy w Menu</h1>
+      <img src={btaLogo} alt="BTA Logo" style={{ display: 'block', marginBottom:'30px', margin: '0 auto', maxWidth: '250px' }} />
       <Box className="boxContainer">
         <Link to="/dzienniki" style={{ textDecoration: 'none' }}>
           <div className="tile">
@@ -54,7 +55,7 @@ function MenuPage({ handleLogout }) {
           </div>
         </Link>
       </Box>
-      <Button sx={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleLogoutClick}>
+      <Button sx={{ marginTop: '10px' }} variant="contained" className="customButton" onClick={handleLogoutClick}>
         Wyloguj
       </Button>
 

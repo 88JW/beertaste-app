@@ -8,11 +8,7 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-
-// Analiza: 
-// - Użycie useState do przechowywania email, password, confirmPassword.
-// - Funkcja handleRegister wykonuje rejestrację przez Firebase auth oraz zapis do Firestore.
-// - Wyświetlanie alertów przy błędach lub sukcesie.
+import btaLogo from '../../assets/bta_logo_2.png';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -43,7 +39,8 @@ const Register = () => {
 
   return (
     <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-      <Typography variant="h2" className="login-header">Zarejestruj się</Typography>
+      <img src={btaLogo} alt="BTA Logo" style={{ display: 'block', margin: '0 auto', maxWidth: '250px' }} />
+      <Typography variant="h5" className="login-header">Zarejestruj się</Typography>
       <Box component="form" onSubmit={handleRegister} sx={{ display: 'flex', flexDirection: 'column' }}>
         <TextField
           fullWidth
@@ -72,9 +69,9 @@ const Register = () => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
-        <Button type="submit" variant="contained" color="primary">Zarejestruj się</Button>
+        <Button type="submit" variant="contained" className="customButton">Zarejestruj się</Button>
       </Box>
-      <Button component={Link} to="/" color="primary">Zaloguj się</Button>
+      <Button component={Link} to="/" variant="contained" className="customButton">Zaloguj się</Button>
     </Container>
   );
 };
