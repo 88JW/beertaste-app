@@ -9,7 +9,6 @@ import btaLogo from '../../assets/bta_logo.png';
 function WelcomePage({ user }) {
   return (
     <Container>
-      {/* <Typography variant="h4" align="center" gutterBottom>Witaj!</Typography> */}
       <img src={btaLogo} alt="BTA Logo" style={{ display: 'block', margin: '0 auto', maxWidth: '250px' }} />
       {user ? (
         <Typography align="center">Jesteś zalogowany jako: {user.email}</Typography>
@@ -22,7 +21,7 @@ function WelcomePage({ user }) {
           sx={{
             backgroundColor: '#959B27',
             border: '2px solid black',
-            '&:hover': { backgroundColor: '#FFCF54' } // dodano hover kolor
+            '&:hover': { backgroundColor: '#FFCF54' }
           }}
         >
           Zaloguj się
@@ -34,7 +33,7 @@ function WelcomePage({ user }) {
           sx={{
             backgroundColor: '#959B27',
             border: '2px solid black',
-            '&:hover': { backgroundColor: '#FFCF54' } // dodano hover kolor
+            '&:hover': { backgroundColor: '#FFCF54' }
           }}
         >
           Zarejestruj
