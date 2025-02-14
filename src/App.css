@@ -67,6 +67,14 @@ body {
   align-items: center;
 }
 
+.customButton {
+  background-color: #959B27 !important;
+  border: 2px solid black;
+}
+.customButton:hover {
+  background-color: #FFCF54 !important;
+}
+
 @media (max-width: 400px) {
   .tile {
     width: 120px;

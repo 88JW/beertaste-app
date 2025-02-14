@@ -18,11 +18,7 @@ function WelcomePage({ user }) {
           component={Link}
           to="/login"
           variant="contained"
-          sx={{
-            backgroundColor: '#959B27',
-            border: '2px solid black',
-            '&:hover': { backgroundColor: '#FFCF54' }
-          }}
+          className="customButton"
         >
           Zaloguj się
         </Button>
@@ -30,11 +26,7 @@ function WelcomePage({ user }) {
           component={Link}
           to="/register"
           variant="contained"
-          sx={{
-            backgroundColor: '#959B27',
-            border: '2px solid black',
-            '&:hover': { backgroundColor: '#FFCF54' }
-          }}
+          className="customButton"
         >
           Zarejestruj
         </Button>
