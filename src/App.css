@@ -1,11 +1,3 @@
-/* Analiza:
-   - Definicje stylów dla elementów body, #root, logo zapewniają spójny layout.
-   - Klasy .boxContainer, .tile oraz .iconMenu definiują wygląd poszczególnych komponentów.
-   - Media query dla ekranów o szerokości <= 400px zmienia rozmiary kafelków,
-     co poprawia responsywność na urządzeniach mobilnych.
-   - Stylizacja jest czytelna i zgodna z dobrymi praktykami CSS.
-*/
-
 body {
   margin: 0;
   display: flex;
@@ -53,7 +45,8 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     flex-direction: column;
     border: 2px solid black !important;
-    background-color: #FFF5D4; 
+    background-image: url('assets/backgraund1.png'); 
+    
 }
 .tile:hover {
     background-color: #e0e0e0;
