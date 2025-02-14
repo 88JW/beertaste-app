@@ -4,7 +4,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import btaLogo from '../../assets/bta_logo.png';
+import btaLogo from '../../assets/bta_logo_2.png';
 
 function WelcomePage({ user }) {
   return (
