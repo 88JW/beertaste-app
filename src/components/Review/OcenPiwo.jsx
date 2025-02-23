@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -12,7 +11,6 @@ import {
 } from "@mui/material";
 import { getFirestore, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
-import IlePiwWypito from "./IlePiwWypito";
 
 const OcenPiwo = () => {
   const navigate = useNavigate();
@@ -32,61 +30,75 @@ const OcenPiwo = () => {
     fetchLastReview();
   }, []);
 
-
-  
   return (
     <>
-    <h1>Moje Piwne Podsumowanie</h1>
-      
+      <h1>Moje Piwne Podsumowanie</h1>
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",         
-          alignItems: "center",   
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <Paper elevation={3} sx={{ mt: 2 }}>
-        <IlePiwWypito />
-        </Paper> 
-
-        <br></br>
-        <Box className='boxContainer'>
-        <Link to="/add-review" >
-          <div className="tile">           
-            Dodaj Ocenę
-          </div>
-        </Link>
-        <Link to="/my-reviews" >
-        <div className="tile">           
-            Moje Oceny
-          </div>
-        </Link>
+        <br />
+        <Box className="boxContainer">
+          <Link to="/add-review">
+            <div className="tile">Dodaj Ocenę</div>
+          </Link>
+          <Link to="/my-reviews">
+            <div className="tile">Moje Oceny</div>
+          </Link>
         </Box>
-        
         <h2>Ostatni wpis:</h2>
         {lastReview && (
-          <Card sx={{ width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-            
-            <Link to={`/review/${lastReview.id}`}>
-              {lastReview.photoUrl && (
-                <CardMedia
-                  sx={{ width: '100%', height: 'auto', marginTop: '10px', cursor: 'pointer' }}
-                  component="img"
-                  image={lastReview.photoUrl}
-                  alt="Beer"
-                />
-              )}
-            </Link>          
-            
+          <Card
+            sx={{
+              width: "100%",
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}
+          >
+            {lastReview.photoUrl && (
+              <CardMedia
+                sx={{
+                  width: "100%",
+                  height: "auto",
+                  marginTop: "10px",
+                }}
+                component="img"
+                image={lastReview.photoUrl}
+                alt="Beer"
+              />
+            )}
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
                 {lastReview.beerName}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-              {lastReview.brewery} - {lastReview.style}
+                {lastReview.brewery} - {lastReview.style}
               </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Data degustacji: {new Date(lastReview.tastingDate).toLocaleDateString()}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Ocena ogólna: {lastReview.overallRating}
+              </Typography>
+              {lastReview.iconUrl && (
+                <CardMedia
+                  sx={{
+                    width: "50px",
+                    height: "50px",
+                    marginTop: "10px",
+                  }}
+                  component="img"
+                  image={lastReview.iconUrl}
+                  alt="Icon"
+                />
+              )}
             </CardContent>
-          </Card>)}
+          </Card>
+        )}
       </Box>
       <Button sx={{ mt: 2 }} variant="contained" onClick={handleBack}>
         Wstecz
