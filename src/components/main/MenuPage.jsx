@@ -9,6 +9,7 @@ import CalculateIcon from "@mui/icons-material/Calculate";
 import { useMediaQuery, useTheme } from '@mui/material';
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import QuizIcon from '@mui/icons-material/Quiz'; // Dodana nowa ikona
 import Button from "@mui/material/Button";
 import btaLogo from '../../assets/bta_logo_3.png';
 
@@ -52,6 +53,12 @@ function MenuPage({ handleLogout }) {
           <div className="tile">
             <LightbulbIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom: '10px' }} />
             Pomysły
+          </div>
+        </Link>
+        <Link to="/quiz" style={{ textDecoration: 'none' }}>
+          <div className="tile">
+            <QuizIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom: '10px' }} />
+            Quiz
           </div>
         </Link>
       </Box>

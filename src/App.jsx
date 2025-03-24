@@ -26,6 +26,7 @@ import EditReviewPage from './components/Review/EditReviewPage';
 import SzczegolyWarki from './components/dzienniki/SzczegolyWarki';
 import PomyslyPage from './components/main/PomyslyPage';
 import PasswordReset from './components/auth/PasswordReset';
+import Quiz from './components/quiz/Quiz';
 
 function App() {
 
@@ -83,6 +84,7 @@ function App() {
             <Route path="/dzienniki/warzenia/:id" element={<SzczegolyWarki />} />
             <Route path="/my-reviews" element={<MyReviewsPage />} />
             <Route path="/pomysly" element={<PomyslyPage />} />
+            <Route path="/quiz" element={<Quiz />} />
             <Route path="/review/:id" element={<ReviewDetailsPage />} />
             <Route path="/edit-review/:id" element={<EditReviewPage />} />
           </>
