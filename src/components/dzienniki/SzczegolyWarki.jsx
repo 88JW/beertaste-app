@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { doc, getDoc, collection, addDoc, getDocs } from 'firebase/firestore';
 import { db, auth} from '../../firebase';
 import { TextField, Button, Checkbox, FormControlLabel, List, ListItem, ListItemText, Typography, Paper, Grid } from '@mui/material';
+import firebase from 'firebase/compat/app';
 
 function SzczegolyWarki() {
   const { id } = useParams();
@@ -14,55 +15,56 @@ function SzczegolyWarki() {
     blg: '',
     temperatura: '',
     piana: false,
-    co2: false, notatki: '',
-  })
+    co2: false, 
+    notatki: '',
+  });
   const [przebiegFermentacji, setPrzebiegFermentacji] = useState([]); 
 
   const getPrzebiegFermentacji = async () => {
     const przebiegFermentacjiCollection = collection(db, "dziennikiWarzenia", id, "przebiegFermentacji");
     const przebiegFermentacjiSnapshot = await getDocs(przebiegFermentacjiCollection);
     const przebiegFermentacjiList = przebiegFermentacjiSnapshot.docs.map((doc) => {
-      const dataPomiaru = doc.data().dataPomiaru ? doc.data().dataPomiaru.toDate() : null;
+      // Extract the data first
+      const data = doc.data();
+      // Ensure the timestamp is properly converted to a Date object
+      const dataPomiaru = data.dataPomiaru ? new Date(data.dataPomiaru.seconds * 1000) : null;
       return {
         id: doc.id,
-        dataPomiaru,
-        ...doc.data()
-      }}).sort((a, b) => (b.dataPomiaru || 0) - (a.dataPomiaru || 0));
+        ...data,
+        dataPomiaru // Override with the properly converted Date
+      };
+    }).sort((a, b) => (b.dataPomiaru || 0) - (a.dataPomiaru || 0));
     
     setPrzebiegFermentacji(przebiegFermentacjiList);
   };
 
   const fetchDziennik = async () => {
-  try {
-    const userId = auth.currentUser?.uid;
-    if (!userId) return navigate('/dzienniki/warzenia');
-    const warkaRef = doc(db, 'dziennikiWarzenia', id);
-    const docSnap = await getDoc(warkaRef);
-
+    try {
+      const userId = auth.currentUser?.uid;
+      if (!userId) return navigate('/dzienniki/warzenia');
+      const warkaRef = doc(db, 'dziennikiWarzenia', id);
+      const docSnap = await getDoc(warkaRef);
 
       if (docSnap.exists()) {
         if (!docSnap.data()) return navigate('/dzienniki/warzenia')
-         if(docSnap.data().userId === userId){
-           setWarka(docSnap.data());
-           getPrzebiegFermentacji();
+        if(docSnap.data().userId === userId){
+          setWarka(docSnap.data());
+          getPrzebiegFermentacji();
         } else {
-        setWarka(null)
-      }
-    } else {
-      console.log('Nie znaleziono dokumentu!');  
+          setWarka(null)
         }
-      } catch (error) {
-        console.error('Błąd pobierania danych:', error);
-      } finally {
-        
-        setLoading(false);
+      } else {
+        console.log('Nie znaleziono dokumentu!');  
       }
+    } catch (error) {
+      console.error('Błąd pobierania danych:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-
     setLoading(true);
-
     fetchDziennik();
   }, [id]);
 
@@ -75,37 +77,40 @@ function SzczegolyWarki() {
   }
 
   const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
+    const { name, value, type, checked } = event.target;    
 
-    
-
-    setFormData(prevFormData => ({
-      ...prevFormData, 
-      ...(name === 'dataPomiaru' && setDataPomiaru(new Date(value))),
-      
-      [name]: type === 'checkbox' ? checked : value
-    }));
-
+    if (name === 'dataPomiaru') {      
+      setDataPomiaru(new Date(value));
+    } else {
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
   };
 
   const handleSubmit = async (event) => {
-    
-   
-
     event.preventDefault();
     try {
-      
+      // Convert the JavaScript Date to a Firestore timestamp
       const data = {
         ...formData,
-        dataPomiaru: dataPomiaru,
+        dataPomiaru: firebase.firestore.Timestamp.fromDate(dataPomiaru),
       };
       const docRef = await addDoc(collection(db, 'dziennikiWarzenia', id, 'przebiegFermentacji'), data);
-      const newPomiar = { id: docRef.id, ...formData, dataPomiaru: dataPomiaru };
+      
+      // Create a new measurement object with a proper Date object
+      const newPomiar = { 
+        id: docRef.id, 
+        ...formData, 
+        dataPomiaru: new Date(dataPomiaru) // Ensure it's a proper Date object
+      };
+      
       setFormData({ blg: '', temperatura: '', piana: false, co2: false, notatki: '' });
       setPrzebiegFermentacji((prevPrzebieg) => [newPomiar, ...prevPrzebieg]);
     } catch (error) {
       console.error('Błąd dodawania pomiaru:', error);
-    } 
+    }
   };
 
   return (
@@ -130,17 +135,32 @@ function SzczegolyWarki() {
         </Grid>
         <Grid item xs={12}>
           <Paper elevation={3} style={{ padding: '1rem' }}>
-          <Typography variant="h6">Dodaj pomiar</Typography>
+            <Typography variant="h6">Dodaj pomiar</Typography>
             <form onSubmit={handleSubmit}>
               <TextField
-                  type="datetime-local"
-                  name="dataPomiaru"
-                  value={dataPomiaru.toISOString().slice(0, 16)}
-                  onChange={handleChange}
-                   margin="normal"
-                  fullWidth />
-              <TextField label="BLG" name="blg" value={formData.blg} onChange={handleChange} margin="normal" fullWidth />
-              <TextField label="Temperatura" name="temperatura" value={formData.temperatura} onChange={handleChange} margin="normal" fullWidth />
+                type="datetime-local"
+                name="dataPomiaru"
+                value={dataPomiaru.toISOString().slice(0, 16)}
+                onChange={handleChange}
+                margin="normal"
+                fullWidth 
+              />
+              <TextField 
+                label="BLG" 
+                name="blg" 
+                value={formData.blg} 
+                onChange={handleChange} 
+                margin="normal" 
+                fullWidth 
+              />
+              <TextField 
+                label="Temperatura" 
+                name="temperatura" 
+                value={formData.temperatura} 
+                onChange={handleChange} 
+                margin="normal" 
+                fullWidth 
+              />
               <FormControlLabel
                 control={<Checkbox name="piana" checked={formData.piana} onChange={handleChange} />}
                 label="Piana"
@@ -164,28 +184,35 @@ function SzczegolyWarki() {
         </Grid>
         <Grid item xs={12}>
           <Paper elevation={3} style={{ padding: '1rem' }}>
-          <Typography variant="h6">Przebieg fermentacji</Typography>
-          <List>
-            {przebiegFermentacji.map(item => (
-              <ListItem key={item.id} >
-                 <ListItemText primary={<Typography>Data: {item.dataPomiaru instanceof Date ? item.dataPomiaru.toLocaleDateString() + " " + item.dataPomiaru.toLocaleTimeString() : 'Brak daty'}</Typography>} secondary={<Typography>
-                    BLG: {typeof item.blg === 'string' && item.blg}, 
-                    Temperatura: {typeof item.temperatura === 'string' && item.temperatura}, 
-                    Piana: {item.piana !== undefined && (item.piana ? 'Tak' : 'Nie')},
-                    CO2: {item.co2 !== undefined && (item.co2 ? 'Tak' : 'Nie')}, 
-                    Notatki: {typeof item.notatki === 'string' && item.notatki}
-                    </Typography>} />
-
-              </ListItem>
-            ))}
-          </List>
+            <Typography variant="h6">Przebieg fermentacji</Typography>
+            <List>
+              {przebiegFermentacji.map(item => (
+                <ListItem key={item.id}>
+                  <ListItemText 
+                    primary={
+                      <Typography>
+                        Data: {item.dataPomiaru && item.dataPomiaru instanceof Date && !isNaN(item.dataPomiaru) 
+                          ? item.dataPomiaru.toLocaleDateString() + " " + item.dataPomiaru.toLocaleTimeString() 
+                          : 'Brak daty'}
+                      </Typography>
+                    } 
+                    secondary={<Typography>
+                      BLG: {typeof item.blg === 'string' && item.blg}, 
+                      Temperatura: {typeof item.temperatura === 'string' && item.temperatura}, 
+                      Piana: {item.piana !== undefined && (item.piana ? 'Tak' : 'Nie')},
+                      CO2: {item.co2 !== undefined && (item.co2 ? 'Tak' : 'Nie')}, 
+                      Notatki: {typeof item.notatki === 'string' && item.notatki}
+                    </Typography>}
+                  />
+                </ListItem>
+              ))}
+            </List>
           </Paper>
         </Grid>
-
-        <Button component={Link} to="/dzienniki/warzenia" variant="contained" color="primary">
-          Powrót do warzenia
-        </Button>
       </Grid>
+      <Button component={Link} to="/dzienniki/warzenia" variant="contained" color="primary" sx={{ mt: 2 }}>
+        Powrót do warzenia
+      </Button>
     </div>
   );
 }

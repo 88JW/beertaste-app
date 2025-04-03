@@ -135,7 +135,30 @@ function AddDziennikWarzenia() {
               onChange={handleChange}
               variant="outlined"
               multiline
-              rows={4}
+              minRows={3}
+              sx={{
+                '& .MuiInputBase-root': {
+                  resize: 'vertical',
+                  overflow: 'auto',
+                  minHeight: '100px',
+                },
+                '& textarea': {
+                  resize: 'vertical',
+                  overflow: 'auto',
+                  transition: 'none', // Disable transitions which can interfere with resizing
+                },
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: '3px',
+                  right: '3px',
+                  width: '10px',
+                  height: '10px',
+                  cursor: 'nwse-resize', // Show resize cursor
+                  backgroundImage: 'linear-gradient(135deg, transparent 0%, transparent 75%, #888 75%, #888 100%)',
+                  pointerEvents: 'none', // This ensures the element doesn't interfere with interactions
+                }
+              }}
             />
           </Grid>
           <Grid item xs={12}>
