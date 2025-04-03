@@ -1,9 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { doc, getDoc, collection, addDoc, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, addDoc, getDocs, updateDoc } from 'firebase/firestore';
 import { db, auth} from '../../firebase';
-import { TextField, Button, Checkbox, FormControlLabel, List, ListItem, ListItemText, Typography, Paper, Grid } from '@mui/material';
+import { 
+  TextField, Button, Checkbox, FormControlLabel, List, ListItem, ListItemText, 
+  Typography, Paper, Grid, Box, Collapse, IconButton
+} from '@mui/material';
 import firebase from 'firebase/compat/app';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import PrintIcon from '@mui/icons-material/Print';
+
+// Add a style for print view
+const printStyles = `
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    .print-content, .print-content * {
+      visibility: visible;
+    }
+    .print-content {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+    .no-print, .no-print * {
+      display: none !important;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+  }
+`;
 
 function SzczegolyWarki() {
   const { id } = useParams();
@@ -19,6 +52,31 @@ function SzczegolyWarki() {
     notatki: '',
   });
   const [przebiegFermentacji, setPrzebiegFermentacji] = useState([]); 
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    nazwaWarki: '',
+    dataNastawienia: '',
+    rodzajPiwa: '',
+    drozdze: '',
+    chmiele: '',
+    rodzajCukru: '',
+    notatki: '',
+  });
+  
+  // State for tracking expanded/collapsed sections
+  const [expandedSections, setExpandedSections] = useState({
+    details: true,
+    addMeasurement: true,
+    fermentationProgress: true
+  });
+
+  // Function to toggle section expansion
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
 
   const getPrzebiegFermentacji = async () => {
     const przebiegFermentacjiCollection = collection(db, "dziennikiWarzenia", id, "przebiegFermentacji");
@@ -68,6 +126,20 @@ function SzczegolyWarki() {
     fetchDziennik();
   }, [id]);
 
+  useEffect(() => {
+    if (warka) {
+      setEditFormData({
+        nazwaWarki: warka.nazwaWarki || '',
+        dataNastawienia: warka.dataNastawienia || '',
+        rodzajPiwa: warka.rodzajPiwa || '',
+        drozdze: warka.drozdze || '',
+        chmiele: warka.chmiele || '',
+        rodzajCukru: warka.rodzajCukru || '',
+        notatki: warka.notatki || '',
+      });
+    }
+  }, [warka]);
+
   if (loading) {
     return <div>Ładowanie...</div>;
   }
@@ -86,6 +158,25 @@ function SzczegolyWarki() {
         ...prevFormData,
         [name]: type === 'checkbox' ? checked : value
       }));
+    }
+  };
+
+  const handleEditChange = (event) => {
+    const { name, value } = event.target;
+    setEditFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value
+    }));
+  };
+
+  const handleSaveEdit = async () => {
+    try {
+      const warkaRef = doc(db, 'dziennikiWarzenia', id);
+      await updateDoc(warkaRef, editFormData);
+      setWarka({...warka, ...editFormData});
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Błąd aktualizacji warki:', error);
     }
   };
 
@@ -113,104 +204,285 @@ function SzczegolyWarki() {
     }
   };
 
+  // Handle print functionality
+  const handlePrint = () => {
+    // Expand all sections before printing
+    setExpandedSections({
+      details: true,
+      addMeasurement: true,
+      fermentationProgress: true
+    });
+    
+    // Add a slight delay to ensure sections are expanded before printing
+    setTimeout(() => {
+      window.print();
+    }, 300);
+  };
+
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      {/* Add print styles */}
+      <style>{printStyles}</style>
+      
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="no-print">
         <h1>Szczegóły Warki</h1>
-        <Button component={Link} to="/dzienniki/warzenia" variant="contained" color="primary">
-          Wstecz
-        </Button>
+        <Box display="flex" gap={2}>
+          <Button 
+            startIcon={<PrintIcon />}
+            variant="outlined" 
+            onClick={handlePrint} 
+            color="primary"
+          >
+            Drukuj
+          </Button>
+          <Button component={Link} to="/dzienniki/warzenia" variant="contained" color="primary">
+            Wstecz
+          </Button>
+        </Box>
       </div>
-      <Grid container spacing={2}>
+      
+      {/* Title for print view */}
+      <div className="print-content">
+        <Typography variant="h4" gutterBottom>Dziennik Warzenia: {warka?.nazwaWarki}</Typography>
+      </div>
+      
+      <Grid container spacing={2} className="print-content">
         <Grid item xs={12}>
           <Paper elevation={3} style={{ padding: '1rem' }}>
-            <Typography variant="h6">Nazwa warki: {warka.nazwaWarki}</Typography>
-            <Typography>Data nastawienia: {warka.dataNastawienia}</Typography>
-            <Typography>Rodzaj piwa: {warka.rodzajPiwa}</Typography>
-            <Typography>Drożdże: {warka.drozdze}</Typography>
-            <Typography>Chmiele: {warka.chmiele}</Typography>
-            <Typography>Rodzaj cukru: {warka.rodzajCukru}</Typography>
-            <Typography>Notatki: {warka.notatki}</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper elevation={3} style={{ padding: '1rem' }}>
-            <Typography variant="h6">Dodaj pomiar</Typography>
-            <form onSubmit={handleSubmit}>
-              <TextField
-                type="datetime-local"
-                name="dataPomiaru"
-                value={dataPomiaru.toISOString().slice(0, 16)}
-                onChange={handleChange}
-                margin="normal"
-                fullWidth 
-              />
-              <TextField 
-                label="BLG" 
-                name="blg" 
-                value={formData.blg} 
-                onChange={handleChange} 
-                margin="normal" 
-                fullWidth 
-              />
-              <TextField 
-                label="Temperatura" 
-                name="temperatura" 
-                value={formData.temperatura} 
-                onChange={handleChange} 
-                margin="normal" 
-                fullWidth 
-              />
-              <FormControlLabel
-                control={<Checkbox name="piana" checked={formData.piana} onChange={handleChange} />}
-                label="Piana"
-              />
-              <FormControlLabel
-                control={<Checkbox name="co2" checked={formData.co2} onChange={handleChange} />}
-                label="CO2"
-              />
-              <TextField
-                label="Notatki"
-                name="notatki"
-                value={formData.notatki}
-                onChange={handleChange}
-                margin="normal"
-                fullWidth
-                multiline
-              />
-              <Button type="submit" variant="contained" color="primary">Zapisz</Button>
-            </form>
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper elevation={3} style={{ padding: '1rem' }}>
-            <Typography variant="h6">Przebieg fermentacji</Typography>
-            <List>
-              {przebiegFermentacji.map(item => (
-                <ListItem key={item.id}>
-                  <ListItemText 
-                    primary={
-                      <Typography>
-                        Data: {item.dataPomiaru && item.dataPomiaru instanceof Date && !isNaN(item.dataPomiaru) 
-                          ? item.dataPomiaru.toLocaleDateString() + " " + item.dataPomiaru.toLocaleTimeString() 
-                          : 'Brak daty'}
-                      </Typography>
-                    } 
-                    secondary={<Typography>
-                      BLG: {typeof item.blg === 'string' && item.blg}, 
-                      Temperatura: {typeof item.temperatura === 'string' && item.temperatura}, 
-                      Piana: {item.piana !== undefined && (item.piana ? 'Tak' : 'Nie')},
-                      CO2: {item.co2 !== undefined && (item.co2 ? 'Tak' : 'Nie')}, 
-                      Notatki: {typeof item.notatki === 'string' && item.notatki}
-                    </Typography>}
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Typography variant="h6">
+                {!isEditing ? "Informacje o warce" : "Edytuj szczegóły warki"}
+              </Typography>
+              <Box display="flex" alignItems="center" className="no-print">
+                {!isEditing && (
+                  <Button
+                    startIcon={<EditIcon />}
+                    onClick={() => setIsEditing(true)}
+                    variant="outlined"
+                    size="small"
+                    sx={{ mr: 1 }}
+                  >
+                    Edytuj
+                  </Button>
+                )}
+                <IconButton onClick={() => toggleSection('details')} size="small">
+                  {expandedSections.details ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </Box>
+            </Box>
+            
+            <Collapse in={expandedSections.details}>
+              {!isEditing ? (
+                <>
+                  <Typography>Nazwa warki: {warka.nazwaWarki}</Typography>
+                  <Typography>Data nastawienia: {warka.dataNastawienia}</Typography>
+                  <Typography>Rodzaj piwa: {warka.rodzajPiwa}</Typography>
+                  <Typography>Drożdże: {warka.drozdze}</Typography>
+                  <Typography>Chmiele: {warka.chmiele}</Typography>
+                  <Typography>Rodzaj cukru: {warka.rodzajCukru}</Typography>
+                  <Typography sx={{ whiteSpace: 'pre-wrap', mt: 1 }}>
+                    <strong>Notatki:</strong><br />
+                    {warka.notatki}
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Nazwa Warki"
+                    name="nazwaWarki"
+                    value={editFormData.nazwaWarki}
+                    onChange={handleEditChange}
                   />
-                </ListItem>
-              ))}
-            </List>
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    type="date"
+                    name="dataNastawienia"
+                    value={editFormData.dataNastawienia}
+                    onChange={handleEditChange}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Rodzaj Piwa"
+                    name="rodzajPiwa"
+                    value={editFormData.rodzajPiwa}
+                    onChange={handleEditChange}
+                  />
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Drożdże"
+                    name="drozdze"
+                    value={editFormData.drozdze}
+                    onChange={handleEditChange}
+                  />
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Chmiele"
+                    name="chmiele"
+                    value={editFormData.chmiele}
+                    onChange={handleEditChange}
+                  />
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Rodzaj Cukru"
+                    name="rodzajCukru"
+                    value={editFormData.rodzajCukru}
+                    onChange={handleEditChange}
+                  />
+                  <TextField
+                    fullWidth
+                    margin="normal"
+                    label="Notatki"
+                    name="notatki"
+                    value={editFormData.notatki}
+                    onChange={handleEditChange}
+                    multiline
+                    minRows={3}
+                    sx={{
+                      '& .MuiInputBase-root': {
+                        resize: 'vertical',
+                        overflow: 'auto',
+                        minHeight: '100px',
+                      },
+                      '& textarea': {
+                        resize: 'vertical',
+                        overflow: 'auto',
+                        transition: 'none',
+                      }
+                    }}
+                  />
+                  <Box mt={2} display="flex" gap={2}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<SaveIcon />}
+                      onClick={handleSaveEdit}
+                    >
+                      Zapisz
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      startIcon={<CancelIcon />}
+                      onClick={() => setIsEditing(false)}
+                    >
+                      Anuluj
+                    </Button>
+                  </Box>
+                </>
+              )}
+            </Collapse>
+          </Paper>
+        </Grid>
+        
+        <Grid item xs={12} className="no-print">
+          <Paper elevation={3} style={{ padding: '1rem' }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Typography variant="h6">Dodaj pomiar</Typography>
+              <IconButton onClick={() => toggleSection('addMeasurement')} size="small">
+                {expandedSections.addMeasurement ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+            </Box>
+            
+            <Collapse in={expandedSections.addMeasurement}>
+              <form onSubmit={handleSubmit}>
+                <TextField
+                  type="datetime-local"
+                  name="dataPomiaru"
+                  value={dataPomiaru.toISOString().slice(0, 16)}
+                  onChange={handleChange}
+                  margin="normal"
+                  fullWidth 
+                />
+                <TextField 
+                  label="BLG" 
+                  name="blg" 
+                  value={formData.blg} 
+                  onChange={handleChange} 
+                  margin="normal" 
+                  fullWidth 
+                />
+                <TextField 
+                  label="Temperatura" 
+                  name="temperatura" 
+                  value={formData.temperatura} 
+                  onChange={handleChange} 
+                  margin="normal" 
+                  fullWidth 
+                />
+                <FormControlLabel
+                  control={<Checkbox name="piana" checked={formData.piana} onChange={handleChange} />}
+                  label="Piana"
+                />
+                <FormControlLabel
+                  control={<Checkbox name="co2" checked={formData.co2} onChange={handleChange} />}
+                  label="CO2"
+                />
+                <TextField
+                  label="Notatki"
+                  name="notatki"
+                  value={formData.notatki}
+                  onChange={handleChange}
+                  margin="normal"
+                  fullWidth
+                  multiline
+                />
+                <Button type="submit" variant="contained" color="primary">Zapisz</Button>
+              </form>
+            </Collapse>
+          </Paper>
+        </Grid>
+        
+        <Grid item xs={12} className="page-break">
+          <Paper elevation={3} style={{ padding: '1rem' }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Typography variant="h6">Przebieg fermentacji</Typography>
+              <IconButton onClick={() => toggleSection('fermentationProgress')} size="small" className="no-print">
+                {expandedSections.fermentationProgress ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+            </Box>
+            
+            <Collapse in={expandedSections.fermentationProgress}>
+              <List>
+                {przebiegFermentacji.map(item => (
+                  <ListItem key={item.id}>
+                    <ListItemText 
+                      primary={
+                        <Typography>
+                          Data: {item.dataPomiaru && item.dataPomiaru instanceof Date && !isNaN(item.dataPomiaru) 
+                            ? item.dataPomiaru.toLocaleDateString() + " " + item.dataPomiaru.toLocaleTimeString() 
+                            : 'Brak daty'}
+                        </Typography>
+                      } 
+                      secondary={<Typography>
+                        BLG: {typeof item.blg === 'string' && item.blg}, 
+                        Temperatura: {typeof item.temperatura === 'string' && item.temperatura}, 
+                        Piana: {item.piana !== undefined && (item.piana ? 'Tak' : 'Nie')},
+                        CO2: {item.co2 !== undefined && (item.co2 ? 'Tak' : 'Nie')}, 
+                        {typeof item.notatki === 'string' && item.notatki.trim() && (
+                          <>
+                            <br /><strong>Notatki:</strong><br />
+                            <span style={{ whiteSpace: 'pre-wrap' }}>{item.notatki}</span>
+                          </>
+                        )}
+                      </Typography>}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
           </Paper>
         </Grid>
       </Grid>
-      <Button component={Link} to="/dzienniki/warzenia" variant="contained" color="primary" sx={{ mt: 2 }}>
+      <Button component={Link} to="/dzienniki/warzenia" variant="contained" color="primary" sx={{ mt: 2 }} className="no-print">
         Powrót do warzenia
       </Button>
     </div>
