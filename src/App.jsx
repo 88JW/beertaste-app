@@ -27,6 +27,8 @@ import SzczegolyWarki from './components/dzienniki/SzczegolyWarki';
 import PomyslyPage from './components/main/PomyslyPage';
 import PasswordReset from './components/auth/PasswordReset';
 import Quiz from './components/quiz/Quiz';
+import ListaReceptur from './components/receptury/ListaReceptur';
+import SzczegolyReceptury from './components/receptury/SzczegolyReceptury';
 
 function App() {
 
@@ -43,13 +45,13 @@ function App() {
         setIsLoggedIn(false);
       }
     });
+    
+    return () => unsubscribe();
   }, []);
 
   const handleLogout = () => {
     signOut(auth).then(() => {
       setUser(null);
-      setUser(null);
-
       setIsLoggedIn(false);
     })
       .catch((error) => console.error('Błąd wylogowania', error));
@@ -71,7 +73,8 @@ function App() {
             <Route path="/add-review" element={<AddReviewPage />} />
             <Route path="/dzienniki" element={<DziennikiPage />} />
             <Route path="/kalkulatory" element={<KalkulatoryPage />} />
-            <Route path="/receptury" element={<RecepturyPage />} />
+            <Route path="/receptury" element={<ListaReceptur />} />
+            <Route path="/receptury/:id" element={<SzczegolyReceptury />} />
             <Route path="/ocenPiwo" element={<OcenPiwo />} />
             <Route path="/kalkulatory/blg" element={<BLGCalculator />} />
             <Route path="/kalkulatory/co2" element={<CO2Calculator />} />

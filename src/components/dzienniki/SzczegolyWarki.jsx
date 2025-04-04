@@ -15,6 +15,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import PrintIcon from '@mui/icons-material/Print';
+import BookIcon from '@mui/icons-material/Book';
 
 // Add a style for print view
 const printStyles = `
@@ -228,6 +229,46 @@ function SzczegolyWarki() {
     }, 300);
   };
 
+  // Add function to save as recipe
+  const handleSaveAsRecipe = async () => {
+    try {
+      // Create recipe data from current brew
+      const recipeData = {
+        nazwa: warka.nazwaWarki,
+        rodzajPiwa: warka.rodzajPiwa,
+        drozdze: warka.drozdze,
+        chmiele: warka.chmiele,
+        rodzajCukru: warka.rodzajCukru,
+        notatki: warka.notatki,
+        instrukcja: '', // Empty field for recipe instructions
+        blg: przebiegFermentacji.length > 0 ? przebiegFermentacji[0].blg : '',
+        dataDodania: Timestamp.now(),
+        userId: auth.currentUser?.uid,
+        zrodloWarkaId: id, // Reference to the original brew
+      };
+
+      // Validate all required fields
+      const requiredFields = ['nazwa', 'blg'];
+      for (const field of requiredFields) {
+        if (!recipeData[field]) {
+          throw new Error(`Pole "${field}" jest wymagane`);
+        }
+      }
+
+      // Save the recipe to Firestore
+      const docRef = await addDoc(collection(db, 'receptury'), recipeData);
+      
+      alert('Receptura została zapisana!');
+      
+      // Navigate to the recipe details page
+      navigate(`/receptury/${docRef.id}`);
+      
+    } catch (error) {
+      console.error('Błąd zapisywania receptury:', error);
+      alert(`Nie udało się zapisać receptury: ${error.message}`);
+    }
+  };
+
   return (
     <div>
       {/* Add print styles */}
@@ -236,6 +277,14 @@ function SzczegolyWarki() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="no-print">
         <h1>Szczegóły Warki</h1>
         <Box display="flex" gap={2}>
+          <Button 
+            startIcon={<BookIcon />}
+            variant="contained" 
+            onClick={handleSaveAsRecipe} 
+            color="secondary"
+          >
+            Zapisz jako recepturę
+          </Button>
           <Button 
             startIcon={<PrintIcon />}
             variant="outlined" 
