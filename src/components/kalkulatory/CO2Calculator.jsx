@@ -46,7 +46,7 @@ function Kalkulator() {
 
   return (
     <div className="app-container">
-      <h1>Kalkulator Refrmentaci</h1>
+      <h1>Kalkulator Refermentacji</h1>
 
       <TextField
         label="Litry piwa"
@@ -72,26 +72,57 @@ function Kalkulator() {
         </Select>
       </FormControl>
 
-      <Button variant="contained" color="primary" onClick={oblicz} fullWidth>
+      <Button variant="contained" color="primary" onClick={oblicz} fullWidth sx={{ marginBottom: 2 }}>
         Oblicz
       </Button>
-      {/* Elementy wyświetlające wyniki */}
-      {wynikCukru && (
-        <p>
-          Potrzebujesz {wynikCukru} gramów cukru. Rozpuść cukier w 300ml letniej
-          wody.
-        </p>
-      )}
-      {wynikButelek && <p>Będzie potrzebne {wynikButelek} butelek.</p>}
-
       
-      <Button
-        variant="outlined"
-        startIcon={<ArrowBackIosNewIcon />}
-        onClick={() => navigate("/kalkulatory")}
-      >
-        Wstecz
-      </Button>
+      {/* Results section */}
+      {(wynikCukru || wynikButelek) && (
+        <div>
+          <h2>Wyniki kalkulacji refermentacji:</h2>
+          {wynikCukru && (
+            <p>
+              Potrzebujesz <strong>{wynikCukru} gramów cukru</strong>. Rozpuść cukier w 300ml letniej
+              wody.
+            </p>
+          )}
+          {wynikButelek && (
+            <p>Będzie potrzebne <strong>{wynikButelek} butelek</strong> (0.5L).</p>
+          )}
+          
+          <div style={{ marginTop: '20px', padding: '15px', border: '1px dashed #ccc', borderRadius: '5px' }}>
+            <h3 style={{ margin: '0 0 10px 0' }}>Alternatywna metoda: Cukier bezpośrednio do butelek</h3>
+            <p>
+              Zamiast rozpuszczania całości cukru w wodzie, możesz dodać odmierzoną ilość 
+              bezpośrednio do każdej butelki przed napełnieniem:
+            </p>
+            <ul style={{ marginBottom: '10px' }}>
+              <li><strong>Małe nagazowanie:</strong> 3g cukru na butelkę 0.5L (~1/2 łyżeczki)</li>
+              <li><strong>Standardowe nagazowanie:</strong> 4g cukru na butelkę 0.5L (~3/4 łyżeczki)</li>
+              <li><strong>Duże nagazowanie:</strong> 5g cukru na butelkę 0.5L (~1 łyżeczka)</li>
+            </ul>
+            <p>
+              <em>Uwaga: Stosując tę metodę, upewnij się, że dokładnie odmierzasz ilość cukru dla każdej butelki, 
+              aby zapewnić jednakowy poziom nagazowania.</em>
+            </p>
+          </div>
+          
+          <p style={{ marginTop: '20px' }}>
+            <strong>Wskazówka:</strong> Po dodaniu cukru i butelkowaniu, przechowuj butelki w temperaturze 
+            18-22°C przez około 2 tygodnie w celu prawidłowej refermentacji.
+          </p>
+        </div>
+      )}
+
+      <div style={{ marginTop: '10px' }}>
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBackIosNewIcon />}
+          onClick={() => navigate("/kalkulatory")}
+        >
+          Wstecz
+        </Button>
+      </div>
     </div>
   );
 }
