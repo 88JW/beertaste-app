@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { doc, getDoc, collection, addDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { 
+  doc, getDoc, collection, addDoc, getDocs, updateDoc, 
+  Timestamp // Import Timestamp from the modular API
+} from 'firebase/firestore';
 import { db, auth} from '../../firebase';
 import { 
   TextField, Button, Checkbox, FormControlLabel, List, ListItem, ListItemText, 
   Typography, Paper, Grid, Box, Collapse, IconButton
 } from '@mui/material';
-import firebase from 'firebase/compat/app';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -183,12 +185,15 @@ function SzczegolyWarki() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      // Convert the JavaScript Date to a Firestore timestamp
+      console.log("Submitting form with data:", formData);
+      // Convert the JavaScript Date to a Firestore timestamp using the modular API
       const data = {
         ...formData,
-        dataPomiaru: firebase.firestore.Timestamp.fromDate(dataPomiaru),
+        dataPomiaru: Timestamp.fromDate(dataPomiaru),
       };
+
       const docRef = await addDoc(collection(db, 'dziennikiWarzenia', id, 'przebiegFermentacji'), data);
+      console.log("Document added with ID:", docRef.id);
       
       // Create a new measurement object with a proper Date object
       const newPomiar = { 
@@ -197,10 +202,14 @@ function SzczegolyWarki() {
         dataPomiaru: new Date(dataPomiaru) // Ensure it's a proper Date object
       };
       
+      // Reset form fields
       setFormData({ blg: '', temperatura: '', piana: false, co2: false, notatki: '' });
+      
+      // Update state with new measurement
       setPrzebiegFermentacji((prevPrzebieg) => [newPomiar, ...prevPrzebieg]);
     } catch (error) {
       console.error('Błąd dodawania pomiaru:', error);
+      alert(`Nie udało się dodać pomiaru: ${error.message}`);
     }
   };
 
@@ -397,10 +406,14 @@ function SzczegolyWarki() {
                 <TextField
                   type="datetime-local"
                   name="dataPomiaru"
+                  label="Data pomiaru"
                   value={dataPomiaru.toISOString().slice(0, 16)}
                   onChange={handleChange}
                   margin="normal"
                   fullWidth 
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
                 <TextField 
                   label="BLG" 
@@ -434,8 +447,17 @@ function SzczegolyWarki() {
                   margin="normal"
                   fullWidth
                   multiline
+                  minRows={2}
                 />
-                <Button type="submit" variant="contained" color="primary">Zapisz</Button>
+                <Button 
+                  type="submit" 
+                  variant="contained" 
+                  color="primary" 
+                  fullWidth
+                  sx={{ mt: 2 }}
+                >
+                  Zapisz pomiar
+                </Button>
               </form>
             </Collapse>
           </Paper>

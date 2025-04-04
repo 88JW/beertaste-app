@@ -3,7 +3,7 @@ import { collection, addDoc, doc } from 'firebase/firestore';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button';
-import { db } from '../../firebase';
+import { db, auth } from '../../firebase';  // Fixed import for auth
 
 function AddDziennikWarzenia() {
   const currentDate = new Date().toISOString().split('T')[0];
@@ -172,4 +172,3 @@ function AddDziennikWarzenia() {
 }
 
 export default AddDziennikWarzenia;
-import { auth } from '../../firebase';
