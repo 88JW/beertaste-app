@@ -249,7 +249,7 @@ function SzczegolyReceptury() {
                         <StraightenIcon color="warning" />
                       </ListItemIcon>
                       <ListItemText 
-                        primary="Ekstrakt (BLG)" 
+                        primary="Końcowe BLG" 
                         secondary={receptura.blg || "Nie określono"}
                         primaryTypographyProps={{ fontWeight: 'bold' }}
                       />

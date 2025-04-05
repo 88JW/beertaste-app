@@ -10,7 +10,6 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import LocalDrinkIcon from '@mui/icons-material/LocalDrink';
 import GrassIcon from '@mui/icons-material/Grass';
@@ -212,7 +211,7 @@ function ListaReceptur() {
         {receptury.length > 0 ? (
           <Grid container spacing={3}>
             {receptury.map((receptura) => (
-              <Grid item key={receptura.id} xs={12} sm={6} md={6} lg={4}>
+              <Grid item key={receptura.id} xs={12} sm={12} md={6} lg={6}>
                 <StyledCard elevation={3} sx={{ minHeight: '280px' }}>
                   <CardHeader
                     avatar={
@@ -294,23 +293,32 @@ function ListaReceptur() {
                         {receptura.drozdze || "Nie określono"}
                       </Typography>
                     </Box>
-                    
-                    <Box sx={{ mt: 'auto', pt: 1 }}>
-                      {receptura.blg && (
-                        <Chip
-                          label={`BLG: ${receptura.blg}`}
-                          size="medium"  // Changed to medium from small
-                          sx={{ fontWeight: 'bold', fontSize: '0.9rem' }}
-                          color="info"
-                        />
-                      )}
+
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      mb: 2,  // Increased margin
+                      overflow: 'hidden'
+                    }}>
+                      <GrassIcon color="success" fontSize="medium" sx={{ mr: 1.5, flexShrink: 0 }} />
+                      <Typography 
+                        variant="body2" 
+                        color="text.secondary"
+                        sx={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          fontSize: '1rem'  // Slightly larger font
+                        }}
+                      >
+                        {receptura.chmiele || "Nie określono"}
+                      </Typography>
                     </Box>
                   </CardContent>
                   <CardActions sx={{ 
                     p: 2.5,  // Increased padding
                     borderTop: '1px solid rgba(0,0,0,0.08)',
                     bgcolor: 'rgba(0,0,0,0.02)',
-                    justifyContent: 'space-between'
                   }}>
                     <Button
                       variant="contained"
@@ -318,17 +326,10 @@ function ListaReceptur() {
                       startIcon={<VisibilityIcon />}
                       component={Link}
                       to={`/receptury/${receptura.id}`}
-                      sx={{ borderRadius: 2, py: 1, px: 2 }}  // Increased button size
+                      sx={{ width: '100%' }}  // Make button full width
                     >
                       Szczegóły
                     </Button>
-                    <IconButton 
-                      color="error"
-                      onClick={(e) => handleDeleteClick(receptura, e)}
-                      size="medium"  // Changed from small
-                    >
-                      <DeleteIcon fontSize="medium" />  // Increased icon size
-                    </IconButton>
                   </CardActions>
                 </StyledCard>
               </Grid>
