@@ -16,6 +16,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import PrintIcon from '@mui/icons-material/Print';
 import BookIcon from '@mui/icons-material/Book';
+import ArchiveIcon from '@mui/icons-material/Archive'; // Dodaj import ikony archiwum
 
 // Add a style for print view
 const printStyles = `
@@ -269,6 +270,31 @@ function SzczegolyWarki() {
     }
   };
 
+  // Add function to archive brew
+  const handleArchiveWarka = async () => {
+    try {
+      // Create archive data from current brew
+      const archivedWarkaData = {
+        ...warka,
+        archiwizowano: Timestamp.now(),
+        userId: auth.currentUser?.uid,
+        warkaId: id, // Reference to the original brew
+      };
+
+      // Save the archive to Firestore
+      const docRef = await addDoc(collection(db, 'archiwumWarzenia'), archivedWarkaData);
+      
+      alert('Warka została zarchiwizowana!');
+      
+      // Optionally mark the original brew as archived
+      // await updateDoc(doc(db, 'dziennikiWarzenia', id), { isArchived: true });
+      
+    } catch (error) {
+      console.error('Błąd archiwizacji warki:', error);
+      alert(`Nie udało się zarchiwizować warki: ${error.message}`);
+    }
+  };
+
   return (
     <div>
       {/* Add print styles */}
@@ -277,6 +303,14 @@ function SzczegolyWarki() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="no-print">
         <h1>Szczegóły Warki</h1>
         <Box display="flex" gap={2}>
+          <Button 
+            startIcon={<ArchiveIcon />}
+            variant="contained" 
+            onClick={handleArchiveWarka} 
+            color="warning"
+          >
+            Archiwizuj warkę
+          </Button>
           <Button 
             startIcon={<BookIcon />}
             variant="contained" 

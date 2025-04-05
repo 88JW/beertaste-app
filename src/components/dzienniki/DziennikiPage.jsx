@@ -68,6 +68,12 @@ function DziennikiPage() {
             Dzienniki Warzenia
           </Typography>
         </Box>
+        <Box className="tile" onClick={() => navigate('/dzienniki/historia-warzenia')}>
+          <img src={Brew} alt='brewing' className='iconMenu'/>
+          <Typography variant='h6' sx={{fontSize: '1.2rem'}}>
+            Historia Warzenia
+          </Typography>
+        </Box>
       </Box>
       <Button variant="contained" sx={{ mt: 2 }} onClick={handleBack}>Wstecz</Button>
       

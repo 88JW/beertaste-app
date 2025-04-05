@@ -23,6 +23,14 @@ function DziennikiWarzenia() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const tiles = [
+    {
+      id: 'historia-warzenia',
+      title: 'Historia warzenia',
+      path: '/historia-warzenia'
+    }
+  ];
+
   useEffect(() => {
     const fetchDzienniki = async () => {
         setLoading(true)

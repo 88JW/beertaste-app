@@ -29,6 +29,7 @@ import PasswordReset from './components/auth/PasswordReset';
 import Quiz from './components/quiz/Quiz';
 import ListaReceptur from './components/receptury/ListaReceptur';
 import SzczegolyReceptury from './components/receptury/SzczegolyReceptury';
+import HistoriaWarzenia from './components/dzienniki/HistoriaWarzenia';
 
 function App() {
 
@@ -85,6 +86,7 @@ function App() {
             <Route path="/dzienniki/warzenia" element={<DziennikiWarzenia />} />
             <Route path="/dzienniki/warzenia/add" element={<AddDziennikWarzenia />} />
             <Route path="/dzienniki/warzenia/:id" element={<SzczegolyWarki />} />
+            <Route path="/dzienniki/historia-warzenia" element={<HistoriaWarzenia />} />
             <Route path="/my-reviews" element={<MyReviewsPage />} />
             <Route path="/pomysly" element={<PomyslyPage />} />
             <Route path="/quiz" element={<Quiz />} />
