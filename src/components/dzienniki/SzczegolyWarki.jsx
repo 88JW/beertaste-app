@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
-  doc, getDoc, collection, addDoc, getDocs, updateDoc, 
+  doc, getDoc, collection, addDoc, getDocs, updateDoc, deleteDoc, 
   Timestamp // Import Timestamp from the modular API
 } from 'firebase/firestore';
 import { db, auth} from '../../firebase';
 import { 
   TextField, Button, Checkbox, FormControlLabel, List, ListItem, ListItemText, 
-  Typography, Paper, Grid, Box, Collapse, IconButton
+  Typography, Paper, Grid, Box, Collapse, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -17,6 +17,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import PrintIcon from '@mui/icons-material/Print';
 import BookIcon from '@mui/icons-material/Book';
 import ArchiveIcon from '@mui/icons-material/Archive'; // Dodaj import ikony archiwum
+import DeleteIcon from '@mui/icons-material/Delete'; // Dodaj import ikony usuwania
 
 // Add a style for print view
 const printStyles = `
@@ -41,6 +42,28 @@ const printStyles = `
     }
   }
 `;
+
+// Dodajmy pomocniczą funkcję do bezpiecznego formatowania daty
+const formatDate = (timestamp) => {
+  if (!timestamp) return "Brak daty";
+  
+  try {
+    // Obsługa różnych formatów timestamp z Firestore
+    if (timestamp.seconds) {
+      return new Date(timestamp.seconds * 1000).toLocaleString();
+    } else if (timestamp instanceof Date) {
+      return timestamp.toLocaleString();
+    } else if (typeof timestamp === 'string') {
+      return new Date(timestamp).toLocaleString();
+    } else if (typeof timestamp === 'number') {
+      return new Date(timestamp).toLocaleString();
+    }
+    return "Format daty nieznany";
+  } catch (error) {
+    console.error("Błąd formatowania daty:", error);
+    return "Błąd daty";
+  }
+};
 
 function SzczegolyWarki() {
   const { id } = useParams();
@@ -292,6 +315,27 @@ function SzczegolyWarki() {
     } catch (error) {
       console.error('Błąd archiwizacji warki:', error);
       alert(`Nie udało się zarchiwizować warki: ${error.message}`);
+    }
+  };
+
+  // Add function to delete fermentation entry
+  const handleDeletePomiar = async (pomiarId) => {
+    // Confirm deletion
+    if (window.confirm("Czy na pewno chcesz usunąć ten pomiar? Tej operacji nie można cofnąć.")) {
+      try {
+        // Delete document from fermentation progress collection
+        await deleteDoc(doc(db, "dziennikiWarzenia", id, "przebiegFermentacji", pomiarId));
+        
+        // Remove entry from local state
+        setPrzebiegFermentacji(prevPrzebieg => 
+          prevPrzebieg.filter(pomiar => pomiar.id !== pomiarId)
+        );
+        
+        alert("Pomiar został usunięty.");
+      } catch (error) {
+        console.error("Błąd usuwania pomiaru:", error);
+        alert(`Nie udało się usunąć pomiaru: ${error.message}`);
+      }
     }
   };
 
@@ -556,33 +600,49 @@ function SzczegolyWarki() {
             </Box>
             
             <Collapse in={expandedSections.fermentationProgress}>
-              <List>
-                {przebiegFermentacji.map(item => (
-                  <ListItem key={item.id}>
-                    <ListItemText 
-                      primary={
-                        <Typography>
-                          Data: {item.dataPomiaru && item.dataPomiaru instanceof Date && !isNaN(item.dataPomiaru) 
-                            ? item.dataPomiaru.toLocaleDateString() + " " + item.dataPomiaru.toLocaleTimeString() 
-                            : 'Brak daty'}
-                        </Typography>
-                      } 
-                      secondary={<Typography>
-                        BLG: {typeof item.blg === 'string' && item.blg}, 
-                        Temperatura: {typeof item.temperatura === 'string' && item.temperatura}, 
-                        Piana: {item.piana !== undefined && (item.piana ? 'Tak' : 'Nie')},
-                        CO2: {item.co2 !== undefined && (item.co2 ? 'Tak' : 'Nie')}, 
-                        {typeof item.notatki === 'string' && item.notatki.trim() && (
-                          <>
-                            <br /><strong>Notatki:</strong><br />
-                            <span style={{ whiteSpace: 'pre-wrap' }}>{item.notatki}</span>
-                          </>
-                        )}
-                      </Typography>}
-                    />
-                  </ListItem>
-                ))}
-              </List>
+              {przebiegFermentacji.length > 0 ? (
+                <TableContainer component={Paper} sx={{ mt: 2 }}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Data i godzina</TableCell>
+                        <TableCell>BLG</TableCell>
+                        <TableCell>Temperatura</TableCell>
+                        <TableCell>Piana</TableCell>
+                        <TableCell>CO2</TableCell>
+                        <TableCell>Notatki</TableCell>
+                        <TableCell>Akcje</TableCell> {/* Dodaj nową kolumnę dla akcji */}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {przebiegFermentacji.map((pomiar) => (
+                        <TableRow key={pomiar.id}>
+                          <TableCell>
+                            {formatDate(pomiar.dataPomiaru)}
+                          </TableCell>
+                          <TableCell>{pomiar.blg}</TableCell>
+                          <TableCell>{pomiar.temperatura}</TableCell>
+                          <TableCell>{pomiar.piana ? "Tak" : "Nie"}</TableCell>
+                          <TableCell>{pomiar.co2 ? "Tak" : "Nie"}</TableCell>
+                          <TableCell>{pomiar.notatki}</TableCell>
+                          <TableCell>
+                            <IconButton 
+                              size="small" 
+                              color="error" 
+                              onClick={() => handleDeletePomiar(pomiar.id)}
+                              title="Usuń pomiar"
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Typography sx={{ mt: 2 }}>Brak wpisów w przebiegu fermentacji</Typography>
+              )}
             </Collapse>
           </Paper>
         </Grid>
