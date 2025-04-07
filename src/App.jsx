@@ -12,7 +12,6 @@ import AddReviewPage from './components/Review/AddReviewPage'
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import DziennikiPage from './components/dzienniki/DziennikiPage';
 import KalkulatoryPage from './components/kalkulatory/KalkulatoryPage';
-import RecepturyPage from './components/receptury/RecepturyPage';
 import BLGCalculator from './components/kalkulatory/BLGCalculator';
 import CO2Calculator from './components/kalkulatory/CO2Calculator';
 import IbuCalculator from './components/kalkulatory/IbuCalculator';
