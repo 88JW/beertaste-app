@@ -127,7 +127,21 @@ function SzczegolyReceptury() {
   }
 
   return (
-    <Box sx={{ p: 3, maxWidth: 1200, margin: '0 auto' }}>
+   <Box 
+         sx={{ 
+           position: 'absolute',
+           left: 0,
+           right: 0,
+           top: 0, // Add this to position at the top
+           marginLeft: 'auto',
+           marginRight: 'auto',
+           width: '100%',
+           maxWidth: '100%',
+           boxSizing: 'border-box',
+           overflow: 'hidden',
+           transform: 'translateX(-0px)'  // Counteract right shift
+         }}
+       >
       <Button 
         variant="outlined" 
         startIcon={<ArrowBackIcon />} 
