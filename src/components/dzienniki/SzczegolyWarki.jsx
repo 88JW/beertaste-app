@@ -68,6 +68,32 @@ const formatDate = (timestamp) => {
   }
 };
 
+// Helper function to calculate brewing days
+const calculateBrewingDays = (startDate) => {
+  try {
+    if (!startDate) return null;
+    
+    let brewDate;
+    if (startDate.seconds) {
+      brewDate = new Date(startDate.seconds * 1000);
+    } else if (startDate instanceof Date) {
+      brewDate = startDate;
+    } else if (typeof startDate === 'string') {
+      brewDate = new Date(startDate);
+    } else {
+      return null;
+    }
+    
+    const today = new Date();
+    const diffTime = Math.abs(today - brewDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  } catch (error) {
+    console.error("Error calculating brewing days:", error);
+    return null;
+  }
+};
+
 function SzczegolyWarki() {
   const { id } = useParams();
   const [warka, setWarka] = useState(null);
@@ -382,6 +408,11 @@ function SzczegolyWarki() {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <Typography sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                        <strong>W trakcie warzenia:</strong> {calculateBrewingDays(warka.dataNastawienia)} dni
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
                         <strong>Rodzaj piwa:</strong> {warka.rodzajPiwa}
                       </Typography>
                     </Grid>
@@ -633,13 +664,18 @@ function SzczegolyWarki() {
         
         <Grid item xs={12} className="page-break">
           <Paper elevation={3} sx={{ p: { xs: 1.5, sm: 2, md: 3 } }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
               <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                 Przebieg fermentacji
               </Typography>
-              <IconButton onClick={() => toggleSection('fermentationProgress')} size="small" className="no-print">
-                {expandedSections.fermentationProgress ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-              </IconButton>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Typography variant="body2" sx={{ mr: 2, fontWeight: "medium", color: "text.secondary" }}>
+                  Dni warzenia: <strong>{calculateBrewingDays(warka.dataNastawienia)}</strong>
+                </Typography>
+                <IconButton onClick={() => toggleSection('fermentationProgress')} size="small" className="no-print">
+                  {expandedSections.fermentationProgress ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </Box>
             </Box>
             
             <Collapse in={expandedSections.fermentationProgress}>
