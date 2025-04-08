@@ -22,5 +22,6 @@
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "display": "standalone",
-  "gcm_sender_id": "YOUR_SENDER_ID"
+  "gcm_sender_id": "714203363835",
+  "permissions": ["notifications"]
 }
