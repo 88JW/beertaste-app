@@ -1,6 +1,6 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Login from './components/auth/Login';
 import MenuPage from './components/main/MenuPage';
 import Register from './components/auth/Register';
@@ -29,11 +29,18 @@ import Quiz from './components/quiz/Quiz';
 import ListaReceptur from './components/receptury/ListaReceptur';
 import SzczegolyReceptury from './components/receptury/SzczegolyReceptury';
 import HistoriaWarzenia from './components/dzienniki/HistoriaWarzenia';
+import { onMessageListener } from './firebase';
+import { Snackbar, Alert, Button } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from './theme';
 
 function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [notification, setNotification] = useState({ title: '', body: '', warkaId: null });
+  const [showNotification, setShowNotification] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -49,6 +56,23 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = onMessageListener()
+      .then((payload) => {
+        if (payload) {
+          setNotification({
+            title: payload.notification.title,
+            body: payload.notification.body,
+            warkaId: payload.data?.warkaId
+          });
+          setShowNotification(true);
+        }
+      })
+      .catch((error) => console.error("Błąd odbierania powiadomień:", error));
+
+    return () => unsubscribe;
+  }, []);
+
   const handleLogout = () => {
     signOut(auth).then(() => {
       setUser(null);
@@ -57,44 +81,80 @@ function App() {
       .catch((error) => console.error('Błąd wylogowania', error));
   };
 
+  const handleCloseNotification = () => {
+    setShowNotification(false);
+  };
+
+  const handleNotificationClick = () => {
+    if (notification.warkaId) {
+      navigate(`/dzienniki/warzenia/${notification.warkaId}`);
+    }
+    setShowNotification(false);
+  };
+
   return (
-    <>
-      <Routes>
-        {isLoggedIn === false ? (
-          <>
-            <Route path="/" element={<WelcomePage user={user} />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn} />} />
-            <Route path="/password-reset" element={<PasswordReset />} />
-          </>
-        ) : (
-          <>
-            <Route path="/" element={<MenuPage handleLogout={handleLogout} />} />
-            <Route path="/add-review" element={<AddReviewPage />} />
-            <Route path="/dzienniki" element={<DziennikiPage />} />
-            <Route path="/kalkulatory" element={<KalkulatoryPage />} />
-            <Route path="/receptury" element={<ListaReceptur />} />
-            <Route path="/receptury/:id" element={<SzczegolyReceptury />} />
-            <Route path="/ocenPiwo" element={<OcenPiwo />} />
-            <Route path="/kalkulatory/blg" element={<BLGCalculator />} />
-            <Route path="/kalkulatory/co2" element={<CO2Calculator />} />
-            <Route path="/kalkulatory/ibu" element={<IbuCalculator />} />
-            <Route path="/kalkulatory/temp" element={<TempCalculator />} />
-            <Route path="/dzienniki/asystent-warzenia" element={<AsystentWarzenia />} />
-            <Route path="/dzienniki/asystent-butelkowania" element={<AsystentButelkowania />} />
-            <Route path="/dzienniki/warzenia" element={<DziennikiWarzenia />} />
-            <Route path="/dzienniki/warzenia/add" element={<AddDziennikWarzenia />} />
-            <Route path="/dzienniki/warzenia/:id" element={<SzczegolyWarki />} />
-            <Route path="/dzienniki/historia-warzenia" element={<HistoriaWarzenia />} />
-            <Route path="/my-reviews" element={<MyReviewsPage />} />
-            <Route path="/pomysly" element={<PomyslyPage />} />
-            <Route path="/quiz" element={<Quiz />} />
-            <Route path="/review/:id" element={<ReviewDetailsPage />} />
-            <Route path="/edit-review/:id" element={<EditReviewPage />} />
-          </>
-        )}
-      </Routes>
-    </>
+    <ThemeProvider theme={theme}>
+      <>
+        <Routes>
+          {isLoggedIn === false ? (
+            <>
+              <Route path="/" element={<WelcomePage user={user} />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn} />} />
+              <Route path="/password-reset" element={<PasswordReset />} />
+            </>
+          ) : (
+            <>
+              <Route path="/" element={<MenuPage handleLogout={handleLogout} />} />
+              <Route path="/add-review" element={<AddReviewPage />} />
+              <Route path="/dzienniki" element={<DziennikiPage />} />
+              <Route path="/kalkulatory" element={<KalkulatoryPage />} />
+              <Route path="/receptury" element={<ListaReceptur />} />
+              <Route path="/receptury/:id" element={<SzczegolyReceptury />} />
+              <Route path="/ocenPiwo" element={<OcenPiwo />} />
+              <Route path="/kalkulatory/blg" element={<BLGCalculator />} />
+              <Route path="/kalkulatory/co2" element={<CO2Calculator />} />
+              <Route path="/kalkulatory/ibu" element={<IbuCalculator />} />
+              <Route path="/kalkulatory/temp" element={<TempCalculator />} />
+              <Route path="/dzienniki/asystent-warzenia" element={<AsystentWarzenia />} />
+              <Route path="/dzienniki/asystent-butelkowania" element={<AsystentButelkowania />} />
+              <Route path="/dzienniki/warzenia" element={<DziennikiWarzenia />} />
+              <Route path="/dzienniki/warzenia/add" element={<AddDziennikWarzenia />} />
+              <Route path="/dzienniki/warzenia/:id" element={<SzczegolyWarki />} />
+              <Route path="/dzienniki/historia-warzenia" element={<HistoriaWarzenia />} />
+              <Route path="/my-reviews" element={<MyReviewsPage />} />
+              <Route path="/pomysly" element={<PomyslyPage />} />
+              <Route path="/quiz" element={<Quiz />} />
+              <Route path="/review/:id" element={<ReviewDetailsPage />} />
+              <Route path="/edit-review/:id" element={<EditReviewPage />} />
+            </>
+          )}
+        </Routes>
+
+        <Snackbar
+          open={showNotification}
+          autoHideDuration={6000}
+          onClose={handleCloseNotification}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <Alert 
+            onClose={handleCloseNotification}
+            severity="info"
+            sx={{ width: '100%' }}
+            action={
+              notification.warkaId ? (
+                <Button color="inherit" size="small" onClick={handleNotificationClick}>
+                  ZOBACZ
+                </Button>
+              ) : null
+            }
+          >
+            <strong>{notification.title}</strong><br />
+            {notification.body}
+          </Alert>
+        </Snackbar>
+      </>
+    </ThemeProvider>
   );
 }
 
