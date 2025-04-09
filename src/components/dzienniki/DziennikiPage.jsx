@@ -4,6 +4,7 @@ import { Box, Button, Typography, Snackbar, Alert } from '@mui/material';
 import Bottle from '../../assets/bottle.png'; 
 import Brew from '../../assets/brew.png';
 import { auth } from '../../firebase';
+import CategoryIcon from '@mui/icons-material/Category';
 
 function DziennikiPage() {
   console.log("DziennikiPage")
@@ -72,6 +73,13 @@ function DziennikiPage() {
           <img src={Brew} alt='brewing' className='iconMenu'/>
           <Typography variant='h6' sx={{fontSize: '1.2rem'}}>
             Historia Warzenia
+          </Typography>
+        </Box>
+        {/* Nowy kafelek */}
+        <Box className="tile" onClick={() => navigate('/dzienniki/moje-skladniki')}>
+          <CategoryIcon sx={{ fontSize: '3.5rem' }} className='iconMenu'/> {/* zamiast img */}
+          <Typography variant='h6' sx={{fontSize: '1.2rem'}}>
+            Moje Składniki
           </Typography>
         </Box>
       </Box>

@@ -29,6 +29,7 @@ import Quiz from './components/quiz/Quiz';
 import ListaReceptur from './components/receptury/ListaReceptur';
 import SzczegolyReceptury from './components/receptury/SzczegolyReceptury';
 import HistoriaWarzenia from './components/dzienniki/HistoriaWarzenia';
+import MojeSkladniki from './components/dzienniki/MojeSkladniki';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
 
@@ -90,6 +91,7 @@ function App() {
               <Route path="/dzienniki/warzenia/add" element={<AddDziennikWarzenia />} />
               <Route path="/dzienniki/warzenia/:id" element={<SzczegolyWarki />} />
               <Route path="/dzienniki/historia-warzenia" element={<HistoriaWarzenia />} />
+              <Route path="/dzienniki/moje-skladniki" element={<MojeSkladniki />} />
               <Route path="/my-reviews" element={<MyReviewsPage />} />
               <Route path="/pomysly" element={<PomyslyPage />} />
               <Route path="/quiz" element={<Quiz />} />
