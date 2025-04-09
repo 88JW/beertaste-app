@@ -14,8 +14,6 @@ import PomiarForm from './szczegoly-warki/PomiarForm';
 import PrzebiegFermentacji from './szczegoly-warki/PrzebiegFermentacji';
 import WarkaActions from './szczegoly-warki/WarkaActions';
 import { printStyles } from './szczegoly-warki/utils';
-// Importuj nowy komponent
-import NotyfikacjeWarki from './szczegoly-warki/NotyfikacjeWarki';
 
 function SzczegolyWarki() {
   const { id } = useParams();
@@ -49,7 +47,6 @@ function SzczegolyWarki() {
     details: !isMobile,
     addMeasurement: !isMobile,
     fermentationProgress: !isMobile,
-    notifications: !isMobile  // Nowe pole dla sekcji powiadomień
   });
 
   // Funkcja do przełączania rozwinięcia sekcji
@@ -111,7 +108,6 @@ function SzczegolyWarki() {
       details: !isMobile ? true : prev.details,
       addMeasurement: !isMobile ? true : prev.addMeasurement,
       fermentationProgress: !isMobile ? true : prev.fermentationProgress,
-      notifications: !isMobile ? true : prev.notifications
     }));
   }, [isMobile]);
 
@@ -198,7 +194,6 @@ function SzczegolyWarki() {
       details: true,
       addMeasurement: true,
       fermentationProgress: true,
-      notifications: true
     });
     
     setTimeout(() => {
@@ -315,18 +310,6 @@ function SzczegolyWarki() {
             warka={warka}
             przebiegFermentacji={przebiegFermentacji}
             handleDeletePomiar={handleDeletePomiar}
-            expandedSections={expandedSections}
-            toggleSection={toggleSection}
-            isMobile={isMobile}
-          />
-        </Grid>
-        
-        {/* Dodaj komponent powiadomień */}
-        <Grid item xs={12}>
-          <NotyfikacjeWarki 
-            warkaId={id}
-            warkaName={warka.nazwaWarki}
-            startDate={warka.dataNastawienia}
             expandedSections={expandedSections}
             toggleSection={toggleSection}
             isMobile={isMobile}

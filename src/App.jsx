@@ -29,8 +29,6 @@ import Quiz from './components/quiz/Quiz';
 import ListaReceptur from './components/receptury/ListaReceptur';
 import SzczegolyReceptury from './components/receptury/SzczegolyReceptury';
 import HistoriaWarzenia from './components/dzienniki/HistoriaWarzenia';
-import { onMessageListener } from './firebase';
-import { Snackbar, Alert, Button } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
 
@@ -38,8 +36,6 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState({ title: '', body: '', warkaId: null });
-  const [showNotification, setShowNotification] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,40 +52,12 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = onMessageListener()
-      .then((payload) => {
-        if (payload) {
-          setNotification({
-            title: payload.notification.title,
-            body: payload.notification.body,
-            warkaId: payload.data?.warkaId
-          });
-          setShowNotification(true);
-        }
-      })
-      .catch((error) => console.error("Błąd odbierania powiadomień:", error));
-
-    return () => unsubscribe;
-  }, []);
-
   const handleLogout = () => {
     signOut(auth).then(() => {
       setUser(null);
       setIsLoggedIn(false);
     })
       .catch((error) => console.error('Błąd wylogowania', error));
-  };
-
-  const handleCloseNotification = () => {
-    setShowNotification(false);
-  };
-
-  const handleNotificationClick = () => {
-    if (notification.warkaId) {
-      navigate(`/dzienniki/warzenia/${notification.warkaId}`);
-    }
-    setShowNotification(false);
   };
 
   return (
@@ -130,29 +98,6 @@ function App() {
             </>
           )}
         </Routes>
-
-        <Snackbar
-          open={showNotification}
-          autoHideDuration={6000}
-          onClose={handleCloseNotification}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        >
-          <Alert 
-            onClose={handleCloseNotification}
-            severity="info"
-            sx={{ width: '100%' }}
-            action={
-              notification.warkaId ? (
-                <Button color="inherit" size="small" onClick={handleNotificationClick}>
-                  ZOBACZ
-                </Button>
-              ) : null
-            }
-          >
-            <strong>{notification.title}</strong><br />
-            {notification.body}
-          </Alert>
-        </Snackbar>
       </>
     </ThemeProvider>
   );

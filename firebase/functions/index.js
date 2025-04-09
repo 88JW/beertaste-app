@@ -86,11 +86,6 @@ exports.sendBrewingProgressNotifications = functions.pubsub.schedule('every 1 ho
                 }
               });
               
-              // Zaktualizuj czas ostatniego powiadomienia
-              await notificationsRef.doc(warkaId).update({
-                lastNotification: now
-              });
-              
               notificationsSent++;
               console.log(`Wysłano powiadomienie dla warki ${warkaId} użytkownika ${userId}`);
             }
