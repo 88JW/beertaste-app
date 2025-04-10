@@ -1,51 +1,78 @@
 import React from 'react';
-import { 
-  Card, CardContent, Typography, 
-  Box, IconButton, Chip 
-} from '@mui/material';
+import { Card, CardContent, Typography, Box, IconButton, Chip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-function IngredientCard({ item, category, onEdit, onDelete }) {
+function IngredientCard({ item, onEdit, onDelete, isMobile }) {
   return (
-    <Card elevation={2} sx={{ height: '100%' }}>
-      <CardContent>
+    <Card 
+      elevation={2} 
+      sx={{ 
+        height: '100%',
+        transition: 'transform 0.2s ease',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: 3
+        }
+      }}
+    >
+      <CardContent sx={{ 
+        p: { xs: 1.5, sm: 2 },
+        '&:last-child': { pb: { xs: 1.5, sm: 2 } }
+      }}>
         <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-          <Typography variant="h6" component="div" gutterBottom>
-            {item.name}
-          </Typography>
+          <Box>
+            <Typography 
+              variant="h6" 
+              component="div" 
+              sx={{ 
+                fontSize: { xs: '1rem', sm: '1.25rem' },
+                fontWeight: 'medium',
+                mb: 0.5
+              }}
+            >
+              {item.name}
+            </Typography>
+            <Chip 
+              label={item.amount ? `${item.amount} ${item.unit || ''}` : 'Ilość nieokreślona'}
+              size={isMobile ? "small" : "medium"}
+              color="primary"
+              variant="outlined"
+              sx={{ mb: 1, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+            />
+          </Box>
           <Box>
             <IconButton 
-              size="small" 
-              onClick={() => onEdit(item, category)}
+              size={isMobile ? "small" : "medium"} 
+              onClick={onEdit}
               color="primary"
-              sx={{ mr: 0.5 }}
+              sx={{ p: { xs: 0.5, sm: 1 } }}
             >
-              <EditIcon fontSize="small" />
+              <EditIcon fontSize={isMobile ? "small" : "medium"} />
             </IconButton>
             <IconButton 
-              size="small" 
-              onClick={() => onDelete(item.id, category)}
+              size={isMobile ? "small" : "medium"} 
+              onClick={onDelete}
               color="error"
+              sx={{ p: { xs: 0.5, sm: 1 } }}
             >
-              <DeleteIcon fontSize="small" />
+              <DeleteIcon fontSize={isMobile ? "small" : "medium"} />
             </IconButton>
           </Box>
         </Box>
         
         {item.description && (
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+          <Typography 
+            variant="body2" 
+            color="text.secondary"
+            sx={{ 
+              mt: 1, 
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              wordBreak: 'break-word'
+            }}
+          >
             {item.description}
           </Typography>
-        )}
-        
-        {item.amount && (
-          <Chip 
-            label={`${item.amount} ${item.unit || ''}`} 
-            size="small" 
-            color="primary" 
-            variant="outlined"
-          />
         )}
       </CardContent>
     </Card>

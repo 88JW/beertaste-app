@@ -1,13 +1,13 @@
 import React, { useRef } from 'react';
 import { 
-  Box, Typography, Paper, Table, TableContainer, TableHead, 
-  TableBody, TableRow, TableCell, Grid, Card, CardContent, 
-  Chip, IconButton, Button, Tooltip 
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PrintIcon from '@mui/icons-material/Print';
-import { getCategoryName, getCategoryColor } from './utils';
+  Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, 
+  TableRow, Paper, Card, CardContent, Chip, IconButton, CircularProgress,
+  Button, Tooltip, Grid
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import PrintIcon from "@mui/icons-material/Print";
+import { getCategoryColor, getCategoryName } from "./utils";
 
 function AllIngredientsList({ 
   ingredients, 
@@ -16,56 +16,54 @@ function AllIngredientsList({
   sortDirection, 
   onSortChange, 
   onEdit, 
-  onDelete 
+  onDelete,
+  isMobile
 }) {
   const printContentRef = useRef(null);
   
+  const allIngredients = [
+    ...ingredients.slody.map(item => ({ ...item, category: 'slody', categoryName: 'Słód' })),
+    ...ingredients.chmiele.map(item => ({ ...item, category: 'chmiele', categoryName: 'Chmiel' })),
+    ...ingredients.drozdze.map(item => ({ ...item, category: 'drozdze', categoryName: 'Drożdże' })),
+    ...ingredients.dodatki.map(item => ({ ...item, category: 'dodatki', categoryName: 'Dodatek' }))
+  ].sort((a, b) => {
+    if (sortField === 'name') {
+      return sortDirection === 'asc' 
+        ? a.name.localeCompare(b.name) 
+        : b.name.localeCompare(a.name);
+    } else if (sortField === 'category') {
+      return sortDirection === 'asc' 
+        ? a.categoryName.localeCompare(b.categoryName) 
+        : b.categoryName.localeCompare(a.categoryName);
+    } else if (sortField === 'amount') {
+      const amountA = parseFloat(a.amount) || 0;
+      const amountB = parseFloat(b.amount) || 0;
+      return sortDirection === 'asc' ? amountA - amountB : amountB - amountA;
+    }
+    return 0;
+  });
+  
   if (loading) {
-    return <Typography>Ładowanie...</Typography>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+        <CircularProgress size={isMobile ? 30 : 40} />
+      </Box>
+    );
   }
   
-  // Przygotuj wszystkie składniki jako jedną tablicę
-  const getAllIngredients = () => {
-    const all = [];
-    
-    for (const category in ingredients) {
-      ingredients[category].forEach(item => {
-        all.push({
-          ...item,
-          categoryName: getCategoryName(category),
-          category // dodajemy oryginalną kategorię dla funkcji edycji/usuwania
-        });
-      });
-    }
-    
-    // Sortowanie na podstawie aktualnych ustawień
-    return all.sort((a, b) => {
-      let valueA = a[sortField];
-      let valueB = b[sortField];
-      
-      if (sortField === 'category') {
-        valueA = a.categoryName;
-        valueB = b.categoryName;
-      }
-      
-      if (valueA < valueB) {
-        return sortDirection === 'asc' ? -1 : 1;
-      }
-      if (valueA > valueB) {
-        return sortDirection === 'asc' ? 1 : -1;
-      }
-      
-      if (sortField !== 'name') {
-        return a.name.localeCompare(b.name);
-      }
-      return 0;
-    });
-  };
-  
-  const allIngredients = getAllIngredients();
-  
   if (allIngredients.length === 0) {
-    return <Typography>Brak dodanych składników</Typography>;
+    return (
+      <Typography 
+        variant="body1" 
+        sx={{ 
+          textAlign: 'center', 
+          py: { xs: 2, sm: 3 },
+          fontSize: { xs: '0.875rem', sm: '1rem' } 
+        }}
+      >
+        Brak składników. Kliknij "Dodaj Składnik" aby dodać nowy.
+      </Typography>
+    );
   }
   
   const renderSortArrow = (field) => {
@@ -88,6 +86,11 @@ function AllIngredientsList({
             color="primary" 
             startIcon={<PrintIcon />}
             onClick={handlePrint}
+            size={isMobile ? "small" : "medium"}
+            sx={{ 
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              py: { xs: 0.5, sm: 0.75 }
+            }}
           >
             Drukuj listę
           </Button>
@@ -95,35 +98,52 @@ function AllIngredientsList({
       </Box>
       
       <div id="print-content" ref={printContentRef}>
-        <Typography variant="h6" component="h2" gutterBottom className="print-only" sx={{ display: 'none' }}>
-          Lista Składników
-        </Typography>
+        <Box className="print-only print-header" sx={{ display: 'none' }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Lista Składników Piwowarskich
+          </Typography>
+          <Typography variant="subtitle1">
+            Data wydruku: {new Date().toLocaleDateString()}
+          </Typography>
+        </Box>
         
         {/* Desktop view - tabela */}
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <TableContainer component={Paper} elevation={0}>
-            <Table aria-label="lista wszystkich składników">
+            <Table aria-label="lista wszystkich składników" size={isMobile ? "small" : "medium"}>
               <TableHead>
                 <TableRow>
                   <TableCell 
                     onClick={() => onSortChange('name')}
-                    sx={{ cursor: 'pointer', fontWeight: sortField === 'name' ? 'bold' : 'normal' }}
+                    sx={{ 
+                      cursor: 'pointer', 
+                      fontWeight: sortField === 'name' ? 'bold' : 'normal',
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                    }}
                   >
                     Nazwa{renderSortArrow('name')}
                   </TableCell>
                   <TableCell 
                     onClick={() => onSortChange('category')}
-                    sx={{ cursor: 'pointer', fontWeight: sortField === 'category' ? 'bold' : 'normal' }}
+                    sx={{ 
+                      cursor: 'pointer', 
+                      fontWeight: sortField === 'category' ? 'bold' : 'normal',
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                    }}
                   >
                     Kategoria{renderSortArrow('category')}
                   </TableCell>
                   <TableCell 
                     onClick={() => onSortChange('amount')}
-                    sx={{ cursor: 'pointer', fontWeight: sortField === 'amount' ? 'bold' : 'normal' }}
+                    sx={{ 
+                      cursor: 'pointer', 
+                      fontWeight: sortField === 'amount' ? 'bold' : 'normal',
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                    }}
                   >
                     Ilość{renderSortArrow('amount')}
                   </TableCell>
-                  <TableCell>Opis</TableCell>
+                  <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Opis</TableCell>
                   <TableCell align="right" className="no-print">Akcje</TableCell>
                 </TableRow>
               </TableHead>
@@ -133,22 +153,22 @@ function AllIngredientsList({
                     key={item.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
-                    <TableCell component="th" scope="row">
-                      <Typography variant="body1" fontWeight="medium">
+                    <TableCell component="th" scope="row" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                      <Typography variant="body1" fontWeight="medium" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                         {item.name}
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                       <Chip 
                         label={item.categoryName} 
                         size="small"
                         color={getCategoryColor(item.category)}
                       />
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                       {item.amount ? `${item.amount} ${item.unit || ''}` : '-'}
                     </TableCell>
-                    <TableCell>{item.description || '-'}</TableCell>
+                    <TableCell sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>{item.description || '-'}</TableCell>
                     <TableCell align="right" className="no-print">
                       <IconButton 
                         size="small" 
@@ -176,7 +196,7 @@ function AllIngredientsList({
         {/* Mobile view - karty */}
         <Box sx={{ display: { xs: 'block', md: 'none' } }}>
           <Box display="flex" sx={{ mb: 2 }}>
-            <Typography variant="subtitle1" sx={{ mr: 1 }}>Sortuj po:</Typography>
+            <Typography variant="subtitle1" sx={{ mr: 1, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Sortuj po:</Typography>
             <Chip 
               label={`${sortField === 'name' ? 'Nazwa' : sortField === 'category' ? 'Kategoria' : 'Ilość'} ${sortDirection === 'asc' ? '↑' : '↓'}`}
               onClick={() => {
@@ -190,17 +210,18 @@ function AllIngredientsList({
               }}
               color="primary"
               variant="outlined"
+              size="small"
             />
           </Box>
           
-          <Grid container spacing={2}>
+          <Grid container spacing={1.5}>
             {allIngredients.map(item => (
               <Grid item xs={12} key={item.id}>
                 <Card elevation={2}>
-                  <CardContent>
+                  <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                     <Box display="flex" justifyContent="space-between" alignItems="flex-start">
                       <Box>
-                        <Typography variant="h6" component="div" gutterBottom>
+                        <Typography variant="h6" component="div" gutterBottom sx={{ fontSize: '1rem', mb: 0.5 }}>
                           {item.name}
                         </Typography>
                         <Chip 
@@ -228,25 +249,12 @@ function AllIngredientsList({
                         </IconButton>
                       </Box>
                     </Box>
-                    
-                    {item.amount && (
-                      <Box sx={{ mb: 1 }}>
-                        <Typography variant="body2" color="text.secondary" component="span">
-                          Ilość: 
-                        </Typography>
-                        <Chip 
-                          label={`${item.amount} ${item.unit || ''}`} 
-                          size="small" 
-                          color="primary" 
-                          variant="outlined"
-                          sx={{ ml: 1 }}
-                        />
-                      </Box>
-                    )}
-                    
+                    <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
+                      <strong>Ilość:</strong> {item.amount ? `${item.amount} ${item.unit || ''}` : 'Nie określono'}
+                    </Typography>
                     {item.description && (
-                      <Typography variant="body2" color="text.secondary">
-                        {item.description}
+                      <Typography variant="body2" sx={{ mt: 1, fontSize: '0.75rem' }}>
+                        <strong>Opis:</strong> {item.description}
                       </Typography>
                     )}
                   </CardContent>
@@ -254,6 +262,41 @@ function AllIngredientsList({
               </Grid>
             ))}
           </Grid>
+        </Box>
+        
+        {/* Print view - specjalny widok do druku */}
+        <Box className="print-only" sx={{ display: 'none' }}>
+          {Object.entries(ingredients).map(([category, items]) => 
+            items.length > 0 && (
+              <Box key={category} className="print-category">
+                <Typography variant="h5" gutterBottom className="print-category-title">
+                  {getCategoryName(category)} ({items.length})
+                </Typography>
+                
+                {items.map(item => (
+                  <Box key={item.id} className="print-card">
+                    <Typography className="print-card-title">{item.name}</Typography>
+                    <Box className="print-card-category">{getCategoryName(category)}</Box>
+                    
+                    <Box className="print-card-details">
+                      <Typography>
+                        <strong>Ilość:</strong> {item.amount ? `${item.amount} ${item.unit || ''}` : 'Nie określono'}
+                      </Typography>
+                      {item.description && (
+                        <Typography>
+                          <strong>Opis:</strong> {item.description}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            )
+          )}
+          
+          <Box className="print-footer">
+            Strona <span className="page-number"></span>
+          </Box>
         </Box>
       </div>
     </>

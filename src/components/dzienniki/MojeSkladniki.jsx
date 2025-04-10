@@ -2,26 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Container, Typography, Box, Button, Paper, Tabs, Tab,
-  Snackbar, Alert
+  Snackbar, Alert, useTheme, useMediaQuery
 } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import AddIcon from '@mui/icons-material/Add';
 import { collection, getDocs, addDoc, deleteDoc, doc, query, where, updateDoc } from 'firebase/firestore';
 import { db, auth } from '../../firebase';
 
-// Importujemy komponenty
-import { 
-  TabPanel, 
-  CategoryIngredientList, 
-  AllIngredientsList,
-  AddIngredientDialog,
-  EditIngredientDialog,
-  DeleteConfirmationDialog,
-  printStyles
-} from './mojeSkladniki';
+// Import components directly from their files instead of the barrel file
+import TabPanel from './mojeSkladniki/TabPanel';
+import CategoryIngredientList from './mojeSkladniki/CategoryIngredientList';
+import AllIngredientsList from './mojeSkladniki/AllIngredientsList';
+import AddIngredientDialog from './mojeSkladniki/AddIngredientDialog';
+import EditIngredientDialog from './mojeSkladniki/EditIngredientDialog';
+import DeleteConfirmationDialog from './mojeSkladniki/DeleteConfirmationDialog';
+import { printStyles } from './mojeSkladniki/utils';
 
 function MojeSkladniki() {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [tabValue, setTabValue] = useState(0);
   const [ingredients, setIngredients] = useState({
     slody: [],
@@ -240,20 +240,53 @@ function MojeSkladniki() {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container 
+      maxWidth="lg" 
+      sx={{ 
+        mt: { xs: 2, sm: 3, md: 4 }, 
+        mb: { xs: 2, sm: 3, md: 4 },
+        px: { xs: 1, sm: 2, md: 3 }
+      }}
+    >
       <style>{printStyles}</style>
       <Button
         variant="outlined"
         startIcon={<ArrowBackIosNewIcon />}
         onClick={() => navigate("/dzienniki")}
-        sx={{ mb: 2 }}
+        sx={{ 
+          mb: { xs: 1.5, sm: 2 },
+          py: { xs: 0.5, sm: 0.75 },
+          fontSize: { xs: '0.75rem', sm: '0.875rem' }
+        }}
+        size={isMobile ? "small" : "medium"}
       >
         Powrót do dzienników
       </Button>
 
-      <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold' }}>
+      <Paper 
+        elevation={3} 
+        sx={{ 
+          p: { xs: 1.5, sm: 2, md: 3 }, 
+          borderRadius: { xs: 2, sm: 3 },
+          overflow: 'hidden'
+        }}
+      >
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'space-between', 
+          alignItems: { xs: 'flex-start', sm: 'center' }, 
+          mb: { xs: 1.5, sm: 2 },
+          gap: { xs: 1, sm: 0 }
+        }}>
+          <Typography 
+            variant="h5" 
+            component="h1" 
+            sx={{ 
+              fontWeight: 'bold',
+              fontSize: { xs: '1.25rem', sm: '1.5rem' }
+            }}
+          >
             Moje Składniki
           </Typography>
           <Button
@@ -261,6 +294,8 @@ function MojeSkladniki() {
             color="primary"
             startIcon={<AddIcon />}
             onClick={handleAddIngredient}
+            size={isMobile ? "small" : "medium"}
+            sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
             Dodaj Składnik
           </Button>
@@ -274,12 +309,20 @@ function MojeSkladniki() {
               aria-label="ingredient categories"
               variant="scrollable"
               scrollButtons="auto"
+              allowScrollButtonsMobile
+              sx={{
+                '& .MuiTab-root': {
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  minWidth: { xs: 'auto', sm: 80 },
+                  padding: { xs: '6px 10px', sm: '12px 16px' }
+                }
+              }}
             >
               <Tab label="Słody" />
               <Tab label="Chmiele" />
               <Tab label="Drożdże" />
               <Tab label="Dodatki" />
-              <Tab label="Wszystkie składniki" />
+              <Tab label="Wszystkie" />
             </Tabs>
           </Box>
           
@@ -290,6 +333,7 @@ function MojeSkladniki() {
               onEdit={handleEditClick} 
               onDelete={handleDeleteClick} 
               category="slody" 
+              isMobile={isMobile}
             />
           </TabPanel>
           <TabPanel value={tabValue} index={1}>
@@ -299,6 +343,7 @@ function MojeSkladniki() {
               onEdit={handleEditClick} 
               onDelete={handleDeleteClick} 
               category="chmiele" 
+              isMobile={isMobile}
             />
           </TabPanel>
           <TabPanel value={tabValue} index={2}>
@@ -308,6 +353,7 @@ function MojeSkladniki() {
               onEdit={handleEditClick} 
               onDelete={handleDeleteClick} 
               category="drozdze" 
+              isMobile={isMobile}
             />
           </TabPanel>
           <TabPanel value={tabValue} index={3}>
@@ -317,6 +363,7 @@ function MojeSkladniki() {
               onEdit={handleEditClick} 
               onDelete={handleDeleteClick} 
               category="dodatki" 
+              isMobile={isMobile}
             />
           </TabPanel>
           <TabPanel value={tabValue} index={4}>
@@ -328,6 +375,7 @@ function MojeSkladniki() {
               onSortChange={handleSortChange}
               onEdit={handleEditClick}
               onDelete={handleDeleteClick}
+              isMobile={isMobile}
             />
           </TabPanel>
         </Box>
@@ -339,6 +387,7 @@ function MojeSkladniki() {
         onClose={() => setOpenAddDialog(false)}
         initialValues={newIngredient}
         onSubmit={handleAddDialogSubmit}
+        isMobile={isMobile}
       />
       
       <EditIngredientDialog
@@ -346,12 +395,14 @@ function MojeSkladniki() {
         onClose={() => setOpenEditDialog(false)}
         ingredient={editedIngredient}
         onSubmit={handleEditDialogSubmit}
+        isMobile={isMobile}
       />
       
       <DeleteConfirmationDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
         onConfirm={handleDeleteConfirm}
+        isMobile={isMobile}
       />
 
       <Snackbar 
@@ -360,7 +411,14 @@ function MojeSkladniki() {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbar.severity} 
+          sx={{ 
+            width: '100%',
+            fontSize: { xs: '0.75rem', sm: '0.875rem' }
+          }}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>
