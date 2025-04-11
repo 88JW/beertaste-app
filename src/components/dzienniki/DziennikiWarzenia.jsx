@@ -149,7 +149,11 @@ function DziennikiWarzenia() {
   }
 
   return (
-    <Box>
+    <Box sx={{ 
+      width: '100%', 
+      maxWidth: '100%', 
+      overflowX: 'hidden'
+    }}>
       <Box mb={2}>
         <Typography variant="h4" component="h1">Dzienniki Warzenia</Typography>
       </Box>
@@ -170,20 +174,48 @@ function DziennikiWarzenia() {
       <Paper 
         elevation={3} 
         sx={{ 
-          p: { xs: 3, sm: 4, md: 5 },
-          mb: { xs: 4, md: 5 },
+          p: { xs: 2, sm: 3, md: 4 },
+          mb: { xs: 3, md: 4 },
           borderRadius: 3, 
           backgroundColor: '#f8f9fa',
           backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.9))',
-          maxWidth: { xl: '80%', lg: '90%', md: '95%', sm: '100%' },
-          mx: 'auto'
+          width: '100%',
+          boxSizing: 'border-box'
         }}
       >
         {dzienniki.length > 0 ? (
-          <Grid container spacing={3}>
+          <Grid container spacing={2}>
             {dzienniki.map((dziennik) => (
-              <Grid item key={dziennik.id} xs={12} sm={12} md={12} lg={4} xl={3}>
-                <StyledCard elevation={3} sx={{ minHeight: '300px' }}>
+              <Grid 
+                item 
+                xs={12} 
+                // On small screens always use half width
+                sm={6} 
+                // On medium+ screens:
+                // If exactly 2 items, use half width each (md=6)
+                // If 3+ items, use one-third width each (md=4)
+                md={dzienniki.length === 2 ? 6 : 4} 
+                key={dziennik.id}
+                sx={{
+                  '& .MuiCard-root': {
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }
+                }}
+              >
+                <Card 
+                  sx={{ 
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: 6 
+                    },
+                    height: '100%'
+                  }}
+                  onClick={() => handleDiaryClick(dziennik.id)}
+                >
                   <CardHeader
                     avatar={
                       <WarkaAvatar sx={{ width: 56, height: 56, fontSize: '1.8rem' }}>
@@ -228,7 +260,8 @@ function DziennikiWarzenia() {
                       px: 2,
                       display: 'flex',
                       flexDirection: 'column',
-                      height: '150px'
+                      // Remove fixed height to allow content to determine height
+                      // height: '150px' - removing this fixed height
                     }}
                   >
                     <Box sx={{ 
@@ -308,7 +341,7 @@ function DziennikiWarzenia() {
                       Pokaż szczegóły
                     </Button>
                   </CardActions>
-                </StyledCard>
+                </Card>
               </Grid>
             ))}
           </Grid>
@@ -384,7 +417,7 @@ function DziennikiWarzenia() {
         </Alert>
       </Snackbar>
 
-      <Button component={Link} to="/dzienniki" variant="contained" color="primary" sx={{ mt: 2 }}>
+      <Button component={Link} to="/dzienniki" variant="contained" color="primary" sx={{ mt: 2, mb: 2 }}>
         Powrót
       </Button>
     </Box>
