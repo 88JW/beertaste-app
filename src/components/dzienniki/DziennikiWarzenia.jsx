@@ -149,11 +149,7 @@ function DziennikiWarzenia() {
   }
 
   return (
-    <Box sx={{ 
-      width: '100%', 
-      maxWidth: '100%', 
-      overflowX: 'hidden'
-    }}>
+    <Box>
       <Box mb={2}>
         <Typography variant="h4" component="h1">Dzienniki Warzenia</Typography>
       </Box>
@@ -174,17 +170,17 @@ function DziennikiWarzenia() {
       <Paper 
         elevation={3} 
         sx={{ 
-          p: { xs: 2, sm: 3, md: 4 },
-          mb: { xs: 3, md: 4 },
+          p: { xs: 3, sm: 4, md: 5 },
+          mb: { xs: 4, md: 5 },
           borderRadius: 3, 
           backgroundColor: '#f8f9fa',
           backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.9))',
-          width: '100%',
-          boxSizing: 'border-box'
+          maxWidth: { xl: '80%', lg: '90%', md: '95%', sm: '100%' },
+          mx: 'auto'
         }}
       >
         {dzienniki.length > 0 ? (
-          <Grid container spacing={2}>
+          <Grid container spacing={3}>
             {dzienniki.map((dziennik) => (
               <Grid 
                 item 
@@ -417,7 +413,7 @@ function DziennikiWarzenia() {
         </Alert>
       </Snackbar>
 
-      <Button component={Link} to="/dzienniki" variant="contained" color="primary" sx={{ mt: 2, mb: 2 }}>
+      <Button component={Link} to="/dzienniki" variant="contained" color="primary" sx={{ mt: 2 }}>
         Powrót
       </Button>
     </Box>

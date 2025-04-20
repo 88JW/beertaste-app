@@ -7,7 +7,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NotesIcon from '@mui/icons-material/Notes';
-import { calculateBrewingDays, formatDate } from './utils';
+import { formatDate } from './utils';
 
 const PrzebiegFermentacji = ({ 
   warka, 
@@ -24,9 +24,6 @@ const PrzebiegFermentacji = ({
           Przebieg fermentacji
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="body2" sx={{ mr: 2, fontWeight: "medium", color: "text.secondary" }}>
-            Dni warzenia: <strong>{calculateBrewingDays(warka.dataNastawienia)}</strong>
-          </Typography>
           <IconButton onClick={() => toggleSection('fermentationProgress')} size="small" className="no-print">
             {expandedSections.fermentationProgress ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </IconButton>

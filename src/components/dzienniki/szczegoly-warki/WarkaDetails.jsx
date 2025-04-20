@@ -7,7 +7,6 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { calculateBrewingDays } from './utils';
 
 const WarkaDetails = ({ 
   warka, 
@@ -81,11 +80,6 @@ const ViewMode = ({ warka, isMobile }) => (
     <Grid item xs={12} sm={6}>
       <Typography sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
         <strong>Data nastawienia:</strong> {warka.dataNastawienia}
-      </Typography>
-    </Grid>
-    <Grid item xs={12} sm={6}>
-      <Typography sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-        <strong>W trakcie warzenia:</strong> {calculateBrewingDays(warka.dataNastawienia)} dni
       </Typography>
     </Grid>
     <Grid item xs={12} sm={6}>
