@@ -10,6 +10,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import QuizIcon from '@mui/icons-material/Quiz'; // Dodana nowa ikona
+import RssFeedIcon from '@mui/icons-material/RssFeed';
 import Button from "@mui/material/Button";
 import btaLogo from '../../assets/bta_logo_3.png';
 
@@ -59,6 +60,12 @@ function MenuPage({ handleLogout }) {
           <div className="tile">
             <QuizIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom: '10px' }} />
             Quiz
+          </div>
+        </Link>
+           <Link to="/posts" style={{ textDecoration: 'none' }}>
+          <div className="tile">
+            <RssFeedIcon className="iconMenu" sx={{ fontSize: '5em', marginBottom: '10px' }} />
+            Piwne Posty
           </div>
         </Link>
       </Box>

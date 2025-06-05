@@ -32,6 +32,7 @@ import HistoriaWarzenia from './components/dzienniki/HistoriaWarzenia';
 import MojeSkladniki from './components/dzienniki/MojeSkladniki';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
+import Posts from './components/posts-wp/PostsList';
 
 function App() {
 
@@ -71,6 +72,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login setUser={setUser} setIsLoggedIn={setIsLoggedIn} />} />
               <Route path="/password-reset" element={<PasswordReset />} />
+              <Route path="/posts" element={<Posts />} />
             </>
           ) : (
             <>
@@ -97,6 +99,7 @@ function App() {
               <Route path="/quiz" element={<Quiz />} />
               <Route path="/review/:id" element={<ReviewDetailsPage />} />
               <Route path="/edit-review/:id" element={<EditReviewPage />} />
+              <Route path="/posts" element={<Posts />} />
             </>
           )}
         </Routes>
