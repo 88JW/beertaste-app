@@ -32,18 +32,18 @@ function Posts() {
   if (loading) return <div>Ładowanie postów...</div>;
 
   return (
-    <Box sx={{ width: '100%', maxWidth: '1200px', mx: 'auto', mt: 4 }}>
-      <Paper elevation={3} sx={{ p: 3, borderRadius: 3, backgroundColor: '#f8f9fa', mb: 4 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, justifyContent: 'space-between' }}>
+    <Box sx={{ width: '100%', maxWidth: { xs: '100%', md: '1200px' }, mx: 'auto', mt: 4, px: { xs: 1, sm: 2, md: 0 } }}>
+      <Paper elevation={3} sx={{ p: { xs: 1, sm: 2, md: 3 }, borderRadius: 3, backgroundColor: '#f8f9fa', mb: 4 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, justifyContent: 'space-between', flexDirection: { xs: 'column', sm: 'row' }, gap: { xs: 2, sm: 0 } }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <RssFeedIcon sx={{ mr: 1, fontSize: 35, color: 'primary.main' }} />
-            <Typography variant="h4" component="h1" color="primary" fontWeight="bold">
+            <Typography variant="h4" component="h1" color="primary" fontWeight="bold" sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
               Piwne Posty
             </Typography>
           </Box>
           <Button
             variant="outlined"
-            sx={{ ml: 2 }}
+            sx={{ ml: { xs: 0, sm: 2 }, width: { xs: '100%', sm: 'auto' } }}
             href="/"
           >
             Powrót do menu
@@ -69,10 +69,9 @@ function Posts() {
                 />
                 <Divider />
                 <CardContent sx={{ flexGrow: 1, pt: 2, pb: 1, px: 2 }}>
-                  <div dangerouslySetInnerHTML={{ __html: post.content }} />
+                  <div style={{ wordBreak: 'break-word' }} dangerouslySetInnerHTML={{ __html: post.content }} />
                 </CardContent>
                 <CardActions sx={{ p: 2.5, borderTop: '1px solid rgba(0,0,0,0.08)', bgcolor: 'rgba(0,0,0,0.02)' }}>
-                
                 </CardActions>
               </Card>
             </Grid>
