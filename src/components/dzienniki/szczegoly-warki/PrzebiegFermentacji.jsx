@@ -17,6 +17,16 @@ const PrzebiegFermentacji = ({
   toggleSection, 
   isMobile 
 }) => {
+  // Sortowanie po dacie malejąco (najnowsze na górze)
+  const sortedFermentacja = [...przebiegFermentacji].sort((a, b) => {
+    const dateA = a.dataPomiaru?.seconds
+      ? a.dataPomiaru.seconds * 1000
+      : new Date(a.dataPomiaru).getTime();
+    const dateB = b.dataPomiaru?.seconds
+      ? b.dataPomiaru.seconds * 1000
+      : new Date(b.dataPomiaru).getTime();
+    return dateB - dateA;
+  });
   return (
     <Paper elevation={3} sx={{ p: { xs: 1.5, sm: 2, md: 3 } }} className="page-break">
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
@@ -31,17 +41,17 @@ const PrzebiegFermentacji = ({
       </Box>
       
       <Collapse in={expandedSections.fermentationProgress}>
-        {przebiegFermentacji.length > 0 ? (
+        {sortedFermentacja.length > 0 ? (
           <>
             {/* Desktop view */}
             <DesktopTableView 
-              przebiegFermentacji={przebiegFermentacji} 
+              przebiegFermentacji={sortedFermentacja} 
               handleDeletePomiar={handleDeletePomiar} 
             />
             
             {/* Mobile view */}
             <MobileCardView 
-              przebiegFermentacji={przebiegFermentacji} 
+              przebiegFermentacji={sortedFermentacja} 
               handleDeletePomiar={handleDeletePomiar} 
             />
           </>
